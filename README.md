@@ -32,3 +32,15 @@ SNOB is a Matlab implementation of finite mixture models. Snob uses the minimum 
 -Logistic regression
 
 The program is easy to use and allows missing data - all missing data should be coded as NaN. Examples of how to use the program are provided; see data/mm_example?.m.
+
+References:
+
+Wallace, C. S. & Dowe, D. L. MML clustering of multi-state, Poisson, von Mises circular and Gaussian distributions. Statistics and Computing, 2000 , 10, pp. 73-83
+
+Wallace, C. S. Intrinsic Classification of Spatially Correlated Data. The Computer Journal, 1998, 41, pp. 602-611
+
+Wallace, C. S. Statistical and Inductive Inference by Minimum Message Length. Springer, 2005
+
+Schmidt, D. F. & Makalic, E. Minimum Message Length Inference and Mixture Modelling of Inverse Gaussian Distributions. AI 2012: Advances in Artificial Intelligence, Springer Berlin Heidelberg, 2012, 7691, pp. 672-682
+
+Edwards, R. T. & Dowe, D. L. Single factor analysis in MML mixture modelling. Research and Development in Knowledge Discovery and Data Mining, Second Pacific-Asia Conference (PAKDD-98), 1998, 1394
