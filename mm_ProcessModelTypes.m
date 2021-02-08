@@ -128,6 +128,30 @@ switch lower(model_list{i})
             k = k + 1;   
         end
 
+    %% von Mises-Fisher distribution
+    case {'vmf'}
+        ModelTypes{k}.type = 'vmf';
+        ModelTypes{k}.Ivar = cols;
+        
+        %% Error checking
+        CovIx = ModelTypes{k}.Ivar;
+        if(length(CovIx) < 2)
+            error('von Mises-Fisher distribution must use at least two data columns');
+        end
+        if(any(VarsUsed(CovIx)))
+            error('Cannot use multiple models for the same data column');
+        end
+        
+        d = length(CovIx);
+        ModelTypes{k}.nDim = d;
+        ModelTypes{k}.MinMembers = d;
+        
+        ix = ~any(isnan(data(:,CovIx)),2);
+        y = data(ix, CovIx);                
+        if(max(abs(1 - sum(y.^2,2))) > 1e-6 ) 
+            error('vMF data must be specified in Euclidean coordinates with each coordinate x_i on the unit sphere (||x_i|| = 1)');
+        end
+        
     %% Multivariate Gaussian distribution
     case {'mvg','mvn'}
         ModelTypes{k}.type = 'mvg';
@@ -135,11 +159,8 @@ switch lower(model_list{i})
         
         %% Error checking
         CovIx = ModelTypes{k}.Ivar;
-        if( any(CovIx<1) || any(CovIx > size(data,2)) )
-            error('All covariates must be included in data matrix');
-        end
         if(length(CovIx) < 2)
-            error('Multivariate Gaussian must use at least two data columns');
+            error('Multivariate Gaussian distribution must use at least two data columns');
         end
         if(any(VarsUsed(CovIx)))
             error('Cannot use multiple models for the same data column');

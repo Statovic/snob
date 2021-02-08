@@ -25,7 +25,17 @@ for i = 1:length(ModelTypes)
             
             class.model{i}.type  = 'mvg';                % type
             class.model{i}.Ivar  = ModelTypes{i}.Ivar;   % which variable in the data?
-            class.model{i}.theta = [mu; Sigma(:)];      % [mu,Sigma]       
+            class.model{i}.theta = [mu; Sigma(:)];       % [mu,Sigma]               
+        
+        case 'vmf'            
+            d = ModelTypes{i}.nDim;
+            kappa = rand(1)*5;
+            mu = randn(d,1);
+            mu = mu ./ norm(mu);
+            
+            class.model{i}.type  = 'vmf';                % type
+            class.model{i}.Ivar  = ModelTypes{i}.Ivar;   % which variable in the data?
+            class.model{i}.theta = [kappa; mu];          % [kappa,mu] s.t. kappa>0 and norm(mu)=1
             
         case 'weibull'
             class.model{i}.type  = 'weibull';            % type

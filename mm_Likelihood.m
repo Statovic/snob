@@ -19,6 +19,20 @@ for k = 1:K
         
         switch m.type            
             
+            %% von Mises-Fisher 
+            case 'vmf' 
+                kappa = m.theta(1);
+                mu = m.theta(2:end);
+                
+                d = length(m.Ivar);
+                if(d == 3)
+                    logbesseli = log(sinh(kappa)) + 0.5*log(2) - 0.5*log(kappa) - 0.5*log(pi);
+                else
+                    logbesseli = log(besseli(d/2-1,kappa));
+                end
+                
+                subL(I) = -( (d/2-1)*log(kappa) - d/2*log(2*pi) - logbesseli ) - kappa*Y(I, m.Ivar)*mu;
+            
             %% Weibull
             case 'weibull'
                 lambda = m.theta(1);

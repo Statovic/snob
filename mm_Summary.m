@@ -33,16 +33,34 @@ for k = 1:nClasses
         model = mm.class{k}.model{i};           % model                
         theta = mm.class{k}.model{i}.theta;
         switch model.type
+            
+            %% von Mises-Fisher distribution
+            case 'vmf'
+                fprintf('%20s', 'von Mises-Fisher');
+                fprintf('%10s = %7.2f\n', 'kappa', theta(1));
+                fprintf('%43s = [', 'mu');                
+                mu = theta(2:end);               
+                % mu
+                for j = 1:length(mu)
+                    fprintf('%4.2f', mu(j));
+                    if(j ~= length(mu))
+                        fprintf(' ');
+                    end
+                end
+                fprintf(']\n');                
+                                
 
             %% Weibull distribution
             case 'weibull'
                 fprintf('%20s', 'Weibull');
                 fprintf('%10s = %7.2f%10s = %7.2f', 'lambda',theta(1),'k',theta(2));
-                
+            
+            %% Exponential
             case 'exp'
                 fprintf('%20s', 'Exponential');
                 fprintf('%10s = %7.2f', 'lambda',theta(1));
             
+            %% Multinomial
             case 'multi'                
                 fprintf('%20s', 'Multinomial');
                 fprintf('%10s = [', 'p');
@@ -53,19 +71,23 @@ for k = 1:nClasses
                     end
                 end
                 fprintf(']');
-                
+            
+            %% Gaussian
             case 'Gaussian'
                 fprintf('%20s', 'Gaussian');
                 fprintf('%10s = %7.2f%10s = %7.2f', 'mu',theta(1),'std',sqrt(theta(2)));
 
+            %% Laplace
             case 'Laplace'
                 fprintf('%20s', 'Laplace');
                 fprintf('%10s = %7.2f%10s = %7.2f', 'mu',theta(1),'b',theta(2));
                 
+            %% Gamma    
             case 'gamma'
                 fprintf('%20s', 'Gamma');
                 fprintf('%10s = %7.2f%10s = %7.2f', 'mu',theta(1),'phi',theta(2));                
                 
+            %% Single factor analysis    
             case 'sfa'
                 fprintf('%20s', 'SingleFA');        
                 fprintf('%10s = [', 'mu');
@@ -132,7 +154,8 @@ for k = 1:nClasses
                     end
                 end
                 
-                
+            
+            %% Multivariate Gaussian
             case 'mvg'
                 fprintf('%20s', 'MVGaussian');        
                 fprintf('%10s = [', 'mu');
@@ -180,25 +203,30 @@ for k = 1:nClasses
                         fprintf('\n');
                     end
                 end
-                
+            
+            %% Poisson    
             case 'Poisson'
                 fprintf('%20s', 'Poisson');
                 fprintf('%10s = %7.2f', 'lambda',theta(1));
                 
+            %% Geometric    
             case 'geometric'
                 fprintf('%20s', 'geometric');
                 fprintf('%10s = %7.2f', 'p',theta(1));                
             
+            %% Inverse Gaussian    
             case 'invGaussian'
                 fprintf('%20s', 'Inv-Gaussian');
                 fprintf('%10s = %7.2f%10s = %7.2f', 'mu',theta(1),'lambda',theta(2));
-                
+               
+            %% Negative binomial    
             case 'negb'
                 fprintf('%20s', 'Neg-binomial');
                 mu = theta(1); phi = theta(2);
                 theta = [phi, 1-mu/(mu+phi)];
                 fprintf('%10s = %7.2f%10s = %7.2f', 'r',theta(1),'p',theta(2));                
             
+            %% Linear regression
             case 'linreg'
                 fprintf('%20s', 'Gaussian regression');
                 fprintf('%10s = %7.2f%10s = %7.2f\n', 'b0',theta(2),'std',sqrt(theta(1)));
@@ -211,7 +239,8 @@ for k = 1:nClasses
                     end                    
                 end
                 fprintf(']');
-                
+            
+            %% Logistic regression    
             case 'logreg'
                 fprintf('%20s', 'Logistic regression');
                 fprintf('%10s = %7.2f\n', 'b0',theta(1));

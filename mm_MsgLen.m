@@ -109,6 +109,33 @@ for k = 1:K
         model = mm.class{k}.model{i};           % model                
         switch model.type
 
+            %% von Mises-Fisher distribution
+            case 'vmf'
+                nParams = mm.ModelTypes{i}.nDim;
+                totalParams = totalParams + nParams;
+                
+                kappa = model.theta(1);
+                %mu = model.theta(2:end);
+                
+                %% Prior densities
+                d = nParams;
+                if(d == 3)
+                    logA = log(coth(kappa) - 1/kappa);
+                else
+                    logA = log(besseli(d/2, kappa)) - logbesseli;
+                end                
+                
+                h_kappa = -(d-1)*log(kappa) + (d+1)/2*log(1+kappa*kappa) - log(2) - gammaln((d+1)/2) + log(sqrt(pi)) + gammaln(d/2);
+                h_mu = log(2) + (d/2)*log(pi) - gammaln(d/2);
+                h_theta = h_mu + h_kappa;
+
+                %% Fisher information
+                logAp = log(1 - exp(2*logA) - (d-1)/kappa*exp(logA));
+                F_theta = (d-1)*(log(Nk(k)) + log(kappa) + logA) + log(Nk(k)) + logAp;
+                F_theta = F_theta * 0.5;                
+                
+                AssLen = h_theta + F_theta;  
+            
             %% Weibull distribution
             case 'weibull'
                 nParams = 2;
@@ -386,7 +413,7 @@ mm.msglen = Ak + Aa + Atheta + An_L + constant;
 
 % Compute BIC and AIC
 % -------------------
-mm.AIC = mm.L + (mm.nParams/2);
+mm.AIC = mm.L + (mm.nParams);
 mm.BIC = mm.L + (mm.nParams/2)*log(n);
 
 end

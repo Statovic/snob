@@ -37,4 +37,4 @@ mm_Summary(mm_sfa);
 % The SFA model is strongly preferred according to the message length. 
 % Specifically, the SFA model is
 exp( -(mm_sfa.msglen - mm_mvg.msglen) )
-% times more likely a posteriori than the one-class gamma model.
+% times more likely a posteriori than the MVG model.

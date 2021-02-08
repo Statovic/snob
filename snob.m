@@ -26,6 +26,9 @@
 %   (.)    Exponential distribution ('exp')
 %               p(X|lambda)      = (1/lambda) * exp(-x/lambda),
 %                                   X > 0, lambda > 0
+%   (.)    von Mises-Fisher distribution ('vmf')
+%               p(X|kappa,mu)    = kappa^((d/2)-1)/(2*pi)^(d/2)/I_{d/2-1}(kappa) exp(kappa * mu' x)
+%                                   ||X|| = ||mu|| = 1, kappa > 0, X,mu \in R^d
 %   (.)    Inverse Gaussian distribution ('igauss')
 %               p(X|mu,lambda)   = sqrt(lambda/2/pi/x^3) * exp(-lambda*(x-mu)^2/2/mu^2/x),
 %                                   X > 0, mu > 0, lambda > 0
@@ -70,6 +73,7 @@
 %                       'mvg'       -> Multivariate normal distribution 
 %                       'weibull'   -> Weibull distribution
 %                       'exp'       -> Exponential distribution
+%                       'vmf'       -> von Mises-Fisher distribution
 %                       'igauss'    -> Inverse Gaussian distribution
 %                       'poisson'   -> Poisson distribution
 %                       'negb'      -> Negative binomial distribution
@@ -84,7 +88,7 @@
 %                       {'norm', 1} -> the first column is data from a normal distribution
 %                       {'exp',1,'poisson',[2,3],mvg,[4,5,6]} -> 
 %                       column 1 is data from the exponential distribution;
-%                       columns 2,3 are data from two exponential distributions
+%                       columns 2,3 are data from two Poisson distributions
 %                       columns 4,5,6 are data from a single multivariate Gaussian distribution
 %
 %                In the case of the linear or logistic regression models, cols = [target, covariate(s)]. That is, 
@@ -113,11 +117,11 @@
 % References:
 % [1] Wallace, C. S. & Dowe, D. L.
 %     MML clustering of multi-state, Poisson, von Mises circular and Gaussian distributions 
-%     Statistics and Computing, 2000 , 10 , 73-83 
+%     Statistics and Computing, 2000, 10, 73-83 
 %
 % [2] Wallace, C. S.
 %     Intrinsic Classification of Spatially Correlated Data 
-%     The Computer Journal, 1998 , 41 , 602-611 
+%     The Computer Journal, 1998, 41, 602-611 
 %
 % [3] Wallace, C. S.
 %     Statistical and Inductive Inference by Minimum Message Length 
@@ -129,13 +133,17 @@
 %
 % [5] Edwards, R. T. & Dowe, D. L.
 %     Single factor analysis in MML mixture modelling 
-%     Research and Development in Knowledge Discovery and Data Mining, Second Pacific-Asia Conference (PAKDD-98), 1998 , 1394 
+%     Research and Development in Knowledge Discovery and Data Mining, Second Pacific-Asia Conference (PAKDD-98), 1998 
+%
+% [6] Parthan Kasarapu & Lloyd Allison
+%     Minimum message length estimation of mixtures of multivariate Gaussian and von Mises-Fisher distributions
+%     Mach Learn (2015) 100:333–378
 %
 % (c) Copyright Enes Makalic and Daniel F. Schmidt, 2019-
 function mm = snob(data, model_list, varargin)
 
 %% Version number
-VERSION = '0.30';
+VERSION = '0.40';
 
 %% Parse options
 inParser = inputParser;  

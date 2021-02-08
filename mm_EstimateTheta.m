@@ -17,7 +17,18 @@ for k = wClasses
         
         switch model.type
             
-            %% Univariate Weibull
+            %% von Mises-Fisher distribution
+            case 'vmf'
+            
+            ix  = ~any(isnan(y),2);
+            kappa0 = 1;
+            mu0 = rand(mm.ModelTypes{i}.nDim, 1);
+            mu0 = mu0 / norm(mu0);
+            theta0 = [kappa0; mu0];
+            theta = fminunc(@(X) vmf_msglen(y(ix,:), r(ix), X(1), X(2:end)), theta0, mm.opts.SearchOptions);
+            model.theta = [exp(theta(1)); theta(2:end)./norm(theta(2:end))];            
+            
+            %% Univariate Weibull distribution
             case 'weibull'
 
             theta = fminunc(@(X) weibull_msglen(y(ix), r(ix), X(1), X(2)), [log(mean(y(ix))), 0], mm.opts.SearchOptions);
@@ -224,8 +235,7 @@ for k = wClasses
             
             b = fminunc(@(Z) logreg_msglen(r(ix), Xr, yr, X, y, Z(1), Z(2:end)), zeros(P+1,1), mm.opts.SearchOptions);            
             model.theta = b;
-            
-            
+                        
         end
         
         mm.class{k}.model{i} = model;
@@ -235,7 +245,43 @@ end
 
 end
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function f = vmf_msglen(x, r, logk, mu)
 
+k = exp(logk);
+mu = mu ./ norm(mu);
+
+%% Data
+d = size(x,2);
+n = sum(r);
+R = sum(bsxfun(@times, x, r));
+R = R(:);
+
+%% Negative log-likelihood
+if(d == 3)
+    logbesseli = log(sinh(k)) + 0.5*log(2) - 0.5*logk - 0.5*log(pi);
+    logA = log(coth(k) - 1/k);
+else
+    logbesseli = log(besseli(d/2-1,k));
+    logA = log(besseli(d/2, k)) - logbesseli;
+end
+
+nll = -n*( (d/2-1)*log(k) - d/2*log(2*pi) - logbesseli ) - k*mu'*R;
+
+%% Prior densities
+h_kappa = -(d-1)*logk + (d+1)/2*log(1+k*k) - log(2) - gammaln((d+1)/2) + log(sqrt(pi)) + gammaln(d/2);
+h_mu = log(2) + (d/2)*log(pi) - gammaln(d/2);
+h = h_mu + h_kappa;
+
+%% Fisher information
+logAp = log(1 - exp(2*logA) - (d-1)/k*exp(logA));
+J = (d-1)*(log(n) + log(k) + logA) + log(n) + logAp;
+J = J * 0.5;
+
+%% Codelength
+f = nll + h + J;
+
+end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function f = linreg_msglentau(n, p, e2, logKmult, logtau)
@@ -260,19 +306,19 @@ f = F + h + r'*L;
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function f = gamma_msglen(n, S, P, logphi)
-
-phi = exp(logphi);
-Coeff = [(1 + n*phi), -S*phi, (-1 + n*phi), -S*phi];
-Coeff = Coeff ./ Coeff(1);                       
-[x1,x2,x3] = cubicroots(Coeff(2), Coeff(3), Coeff(4));
-v = [x1,x2,x3];
-mu=v(v>0);
-
-f = n*gammaln(phi) + n*phi*log(mu/phi) - (phi-1)*P + phi/mu*S;  % neg ll
-f = f + (1/2)*log( phi*psi(1,phi) - 1 ) + log(1 + phi) + log(phi)/2;
-
-end
+% function f = gamma_msglen(n, S, P, logphi)
+% 
+% phi = exp(logphi);
+% Coeff = [(1 + n*phi), -S*phi, (-1 + n*phi), -S*phi];
+% Coeff = Coeff ./ Coeff(1);                       
+% [x1,x2,x3] = cubicroots(Coeff(2), Coeff(3), Coeff(4));
+% v = [x1,x2,x3];
+% mu=v(v>0);
+% 
+% f = n*gammaln(phi) + n*phi*log(mu/phi) - (phi-1)*P + phi/mu*S;  % neg ll
+% f = f + (1/2)*log( phi*psi(1,phi) - 1 ) + log(1 + phi) + log(phi)/2;
+% 
+% end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [a, sigma, v, all_zeros] = mmlsfa(w, N)
