@@ -21,7 +21,7 @@ for i = 1:length(ModelTypes)
         case 'mvg'
             d = ModelTypes{i}.nDim;
             mu = randn(d,1);
-            Sigma = eye(d);
+            Sigma = eye(d)*rand(1)*5;
             
             class.model{i}.type  = 'mvg';                % type
             class.model{i}.Ivar  = ModelTypes{i}.Ivar;   % which variable in the data?
@@ -29,7 +29,7 @@ for i = 1:length(ModelTypes)
         
         case 'vmf'            
             d = ModelTypes{i}.nDim;
-            kappa = rand(1)*5;
+            kappa = 1;
             mu = randn(d,1);
             mu = mu ./ norm(mu);
             

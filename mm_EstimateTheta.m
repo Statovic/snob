@@ -22,11 +22,11 @@ for k = wClasses
             
             ix  = ~any(isnan(y),2);
             kappa0 = 1;
-            mu0 = rand(mm.ModelTypes{i}.nDim, 1);
-            mu0 = mu0 / norm(mu0);
-            theta0 = [kappa0; mu0];
-            theta = fminunc(@(X) vmf_msglen(y(ix,:), r(ix), X(1), X(2:end)), theta0, mm.opts.SearchOptions);
-            model.theta = [exp(theta(1)); theta(2:end)./norm(theta(2:end))];            
+            theta = fminunc(@(X) vmf_msglen(y(ix,:), r(ix), X(1)), kappa0, mm.opts.SearchOptions);
+            
+            S = sum(r(ix) .* y(ix,:));           % sum y_i
+            S = S(:);
+            model.theta = [exp(theta(1)); S / norm(S)];            
             
             %% Univariate Weibull distribution
             case 'weibull'
@@ -246,10 +246,9 @@ end
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function f = vmf_msglen(x, r, logk, mu)
+function f = vmf_msglen(x, r, logk)
 
 k = exp(logk);
-mu = mu ./ norm(mu);
 
 %% Data
 d = size(x,2);
@@ -266,7 +265,7 @@ else
     logA = log(besseli(d/2, k)) - logbesseli;
 end
 
-nll = -n*( (d/2-1)*log(k) - d/2*log(2*pi) - logbesseli ) - k*mu'*R;
+nll = -n*( (d/2-1)*log(k) - d/2*log(2*pi) - logbesseli ) - k*norm(R);
 
 %% Prior densities
 h_kappa = -(d-1)*logk + (d+1)/2*log(1+k*k) - log(2) - gammaln((d+1)/2) + log(sqrt(pi)) + gammaln(d/2);

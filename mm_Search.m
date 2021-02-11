@@ -4,7 +4,7 @@ function mm_best = mm_Search(mm, data)
 mm_best = mm;
 mm_best.msglen = inf;
 
-%% possible outcomes of a split/merge attempt
+%% possible outcomes of search strategy in a single iteration
 outcomes = {'em','re-assign','split','merge','add'};
 
 %% do search
@@ -46,7 +46,7 @@ while not(done)
             I = mnrnd(1, mm_prob) == 1;
             mm = mm_cand{I};
 
-        %% Otherwise greedy search (pick model with smallest message length)
+        % Otherwise greedy search (pick model with smallest message length)
         else
             [~,I] = min(msglen_cand);
             mm = mm_cand{I};
@@ -73,7 +73,8 @@ while not(done)
         
         %% Print current state
         if(mm.opts.display)
-            fprintf('[Iter %6d: #classes = %2d, msglen = %10.2f nits, L = %10.2f, cost = %5.2f]\n', iter, mm_best.nClasses, mm_best.msglen, mm_best.L, mm_best.Atheta + mm_best.constant + mm_best.Ak + mm_best.Aa);
+            fprintf('[Iter %6d: #classes = %2d, msglen = %10.2f nits, L = %10.2f, cost = %5.2f]\n', iter, ...
+                mm_best.nClasses, mm_best.msglen, mm_best.L, mm_best.Atheta + mm_best.constant + mm_best.Ak + mm_best.Aa);
         end        
         
         % next iteration

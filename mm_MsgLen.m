@@ -122,6 +122,7 @@ for k = 1:K
                 if(d == 3)
                     logA = log(coth(kappa) - 1/kappa);
                 else
+                    logbesseli = log(besseli(d/2-1,kappa));
                     logA = log(besseli(d/2, kappa)) - logbesseli;
                 end                
                 

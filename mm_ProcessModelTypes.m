@@ -168,7 +168,7 @@ switch lower(model_list{i})
         
         d = length(CovIx);
         ModelTypes{k}.nDim = d;
-        ModelTypes{k}.MinMembers = d + d*(d+1)/2;
+        ModelTypes{k}.MinMembers = 3;
         
         ix = ~any(isnan(data(:,CovIx)),2);
         y = data(ix, CovIx);

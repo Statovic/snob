@@ -27,9 +27,9 @@ while not(done)
         
         %% Check exit conditions
         cond = (iter > 5) && mean( abs(diff(L(iter-4:iter))) ) < 1e-2;
-        if iter >= mm.opts.emmaxiter || cond
+        if iter >= mm.opts.emmaxiter || cond || any(isnan(mm.Nk))
             done = true;
-        end                
+        end       
 
         % next iteration
         iter = iter + 1;
