@@ -403,14 +403,15 @@ else
 end
 constant = c_d  - gammaln(K+1);
 
-% Total Msglen for a mixture model
+% Total codelength for the mixture model 
+% [see pp. 294, Statistical and Inductive Inference by Minimum Message Length]
 % --------------------------------
-mm.Ak = Ak;
-mm.Aa = Aa;
-mm.Atheta = Atheta;
-mm.constant = constant;
-mm.nParams = totalParams;
-mm.msglen = Ak + Aa + Atheta + An_L + constant;
+mm.nParams = totalParams;   % total number of parameters
+mm.Ak = Ak;                 % assertion length for K
+mm.Aa = Aa;                 % assertion length for the class proportions
+mm.Atheta = Atheta;         % assertion length for model parameters
+mm.constant = constant;     % quantization constant
+mm.msglen = Ak + Aa + Atheta + An_L + constant + log(n)/2;  % total codelength
 
 % Compute BIC and AIC
 % -------------------

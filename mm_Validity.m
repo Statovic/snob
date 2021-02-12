@@ -46,11 +46,11 @@ for k = 1:mm.nClasses
     ix1 = cid == k; % all points in cluster k
     ix2 = (~ix1);   % all other points NOT in cluster k
     
-    Tbw = pdist2(data(ix1,:),data(ix2,:));  % between cluster distance
+    Tbw = pdist2(data(ix1,:),data(ix2,:), distance);  % between cluster distance
     numerator(1) = min([nanmean(Tbw(:)), numerator(1)]);
     numerator(2) = min([nanmin(Tbw(:)), numerator(2)]);
     
-    Twn = pdist(data(ix1,:));               % within cluster distance
+    Twn = pdist(data(ix1,:), distance);               % within cluster distance
     denominator(1) = max([nanmean(Twn(:)), denominator(1)]);
     denominator(2) = max([nanmax(Twn(:)), denominator(2)]);  
     
@@ -62,6 +62,6 @@ end
 DI = numerator ./ denominator;
 
 % Note: unlike in [1], we average the KS test statistics
-KS_sim = mean(s);   
+KS_sim = nanmean(s);   
 
 end

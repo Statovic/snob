@@ -3,10 +3,23 @@ function [mm_r, msglen] = mm_Reassign(mm, data)
 mm_r = mm;
 
 %% randomly re-assign all items
-r = mm.r;
-n = size(data,1);
-mm_r.r = r(randperm(n),:);
-mm_r.Nk = sum(r, 1)';         
+
+% Dirichlet re-assignment
+nR = gamrnd(1 + mm_r.r, 1);
+mm_r.r = bsxfun(@rdivide, nR, sum(nR,2));
+mm_r.Nk = sum(mm_r.r, 1)';         
+
+% Random permutation?
+% n = size(data,1);
+% r = mm.r;
+% mm_r.r = r(randperm(n),:);
+% mm_r.Nk = sum(r, 1)';         
+
+% Random re-assignment?
+% n = size(data,1);
+% mm_r.r = rand(n, mm.nClasses);
+% mm_r.r = bsxfun(@rdivide, mm_r.r, sum(mm_r.r,2));
+% mm_r.Nk = sum(mm_r.r, 1)';         
 
 % initial estimates of theta based on the re-assignment
 mm_r = mm_EstimateTheta(mm_r, data, 1:mm_r.nClasses);   

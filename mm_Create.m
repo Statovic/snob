@@ -40,23 +40,29 @@ switch opts.Initialisation
     %% Assignment based on the k-means++ algorithm
     case 'kmeans++'
         
-        % run kmeans first
-        warning('off', 'stats:kmeans:FailedToConverge');    % supress kmeans++ warnings
-        warning('off', 'stats:kmeans:MissingDataRemoved');
-        [~,~,~,Dist] = kmeans(data, K);
-        warning('on', 'stats:kmeans:FailedToConverge');    
-        warning('on', 'stats:kmeans:MissingDataRemoved');
-        
-        R  = bsxfun(@rdivide, Dist, sum(Dist,2));
-        ix = sum(isnan(Dist),2) > 0;
-        if(any(ix))                
-            t       = rand(sum(ix), K);
-            R(ix,:) = bsxfun(@rdivide, t, sum(t,2));
+        if(K > 1)
+%             warning('off', 'stats:kmeans:FailedToConverge');    % supress kmeans++ warnings
+%             warning('off', 'stats:kmeans:MissingDataRemoved');
+%             [~,~,~,Dist] = kmeans(data, K);
+%             warning('on', 'stats:kmeans:FailedToConverge');    
+%             warning('on', 'stats:kmeans:MissingDataRemoved');
+            [~, Dist] = kmeansinit(data, K);
+            
+            R = bsxfun(@rdivide, Dist, sum(Dist,2));
+            % Heuristic: stop points being assigned 100% to a single class
+            R = bsxfun(@rdivide, 0.1+R, sum(0.1+R,2)); 
+            ix = sum(isnan(Dist),2) > 0;
+            if(any(ix))                
+                t       = rand(sum(ix), K);
+                R(ix,:) = bsxfun(@rdivide, t, sum(t,2));
+            end            
+        else
+            R = ones(mm.N, 1);  % all data belongs to one class fully
         end
-        
+                
         mm.r  = R;
-        mm.Nk = sum(mm.r,1)';
-        mm.a  = mm.Nk / sum(mm.Nk);
+        mm.Nk = sum(mm.r, 1)';
+        mm.a  = (mm.Nk+1/2) ./ (mm.N+K/2); % MML87 estimate vs ML: mm.Nk / sum(mm.Nk);
         
         for k = 1:K
             mm.class{k} = mm_CreateClass(ModelTypes);
