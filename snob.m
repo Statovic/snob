@@ -32,31 +32,31 @@
 %   (.)    Inverse Gaussian distribution ('igauss')
 %               p(X|mu,lambda)   = sqrt(lambda/2/pi/x^3) * exp(-lambda*(x-mu)^2/2/mu^2/x),
 %                                   X > 0, mu > 0, lambda > 0
-%   (.)     Poisson distribution ('poisson')
+%   (.)    Poisson distribution ('poisson')
 %               p(X|lambda)      = lambda^x * exp(-lambda) / x!,
 %                                   X \in {0,1,2,3,...}, lambda > 0
-%   (.)     Negative binomial ('negb')
+%   (.)    Negative binomial ('negb')
 %               p(X|r,p)         = nchoosek(X+r-1, X) (1-p)^r p^X
 %                                   X \in {0,1,2,3,...}, r > 0, 0 < p < 1
-%   (.)     Geometric distribution ('geometric')
+%   (.)    Geometric distribution ('geometric')
 %               p(X|theta )      = (1 - theta)^x * theta
 %                                   X \in {0,1,2,3,...}, 0 < theta < 1
-%   (.)     Multinomial distribution ('multi')
+%   (.)    Multinomial distribution ('multi')
 %               p(X|p)           = n! / (x1! * ... xk!) * p.^x, 
 %                                   n = sum(x), sum(p) = 1
-%   (.)     Gamma distribution ('gamma')
+%   (.)    Gamma distribution ('gamma')
 %               p(X|mu,phi)      = 1/gamma(phi)/(mu/phi)^phi * x^(phi-1) * exp(-x/(mu/phi)),
 %                                  X > 0, mu > 0, phi > 0
-%   (.)     Laplace distribution ('laplace')
+%   (.)    Laplace distribution ('laplace')
 %               p(X|mu,b)        = 1/2/b * exp(-abs(x - mu)/b),
 %                                   X \in R, mu \in R, b > 0
-%   (.)     Single factor analysis model ('sfa') 
+%   (.)    Single factor analysis model ('sfa') 
 %               x_nk             = mu_k + v_n a_k + sigma_k*r_nk,
 %                                   {v_n, {r_nk, k=1,...,K},n=1,...,N} ~ N(0,1)
-%   (.)     Gaussian linear regression ('linreg')
+%   (.)    Gaussian linear regression ('linreg')
 %               p(Y|X,theta)     = Gaussian(b0 + x'*b, sigma^2)
 %                                   Y \in R, b0 \in R, b \ in R^d, sigma>0
-%   (.)     Logistic regression ('logreg')
+%   (.)    Logistic regression ('logreg')
 %               p(Y==1|X,theta)  = logit(b0 + x'*b)
 %                                   Y \in {0,1}, b0 \in R, b \ in R^d              
 %
