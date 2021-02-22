@@ -14,8 +14,8 @@ nModels  = mm.nModelTypes;
 
 fprintf('Minimum Message Length Mixture Model\n');
 fprintf('Message Length  = %8.2f\n', mm.msglen);    
-fprintf('Neg. LogLike    = %8.2f\n', mm.L);    
 fprintf('MML Assertion   = %8.2f\n', mm.Atheta + mm.constant + mm.Ak + mm.Aa);      
+fprintf('Neg. LogLike    = %8.2f\n', mm.L);    
 fprintf('BIC             = %8.2f\n', mm.BIC);    
 fprintf('AIC             = %8.2f\n', mm.AIC);    
 fprintf('Classes         = %8d\n', mm.nClasses);    

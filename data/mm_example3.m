@@ -25,5 +25,6 @@ mm_lapl = snob(x, {'laplace',1:5},'k',1);
 msglen = [mm_mvg.msglen, mm_sfa.msglen, mm_norm.msglen, mm_lapl.msglen];
 [val,I] = min(msglen);
 
-% The model with the smallest message length is the single factor analysis model
+% The model with the smallest message length is the single factor analysis
+% model. Note that this model has 3 classes. 
 mm_Summary(mm_sfa);

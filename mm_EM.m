@@ -16,14 +16,16 @@ while not(done)
     end
     
     %% Estimate class proportions
-    [mm.a, mm.r, mm.Nk, p] = mm_EstimateMixingWeights(mm, data);
+    [mm.a, mm.r, mm.Nk, ~] = mm_EstimateMixingWeights(mm, data);
         
     if(min(mm.Nk) >= mm.MinMembers)
         %% Estimate models parameters
         mm = mm_EstimateTheta(mm, data, 1:mm.nClasses);
 
-        % Negative log-likelihood
-        L(iter) = -sum(log(sum(p,2)));
+        %% New negative log-likelihood
+        p = mm_Likelihood(mm, data, 1:mm.nModelTypes);
+        p = max(min(p, 700), -700);     % log(p) \in [-700, 700]
+        L(iter) = -sum(logsumexp(-p));  % OLD: -sum(log(sum(p,2)));
         
         %% Check exit conditions
         cond = (iter > 5) && mean( abs(diff(L(iter-4:iter))) ) < 1e-2;

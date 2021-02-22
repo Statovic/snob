@@ -8,7 +8,7 @@ mm.class{K+1} = mm_CreateClass(mm.ModelTypes);
 mm.nClasses = K+1;
 
 %% Randomly divide the memberships of the datapoints between the classes
-mix = rand(n,1);
+mix = rand(n,1);  % mix \in (0, 1)
 r = mm.r(:,i);
 mm.r(:,i) = r.*mix;
 mm.r(:,mm.nClasses) = r.*(1-mix);

@@ -4,7 +4,7 @@ clear;
 % Seed the random number generator
 rng(1);
 
-% Generate some data from a mixture of two exponential distributions 
+% Generate n=100 data points from a mixture of two exponential distributions 
 % x ~ 0.6 Exp(5) + 0.4 Exp(1)
 x = [exprnd(5, 60, 1); exprnd(1, 40, 1)];
 
@@ -15,7 +15,7 @@ x = [exprnd(5, 60, 1); exprnd(1, 40, 1)];
 mm = snob(x, {'exp',1});
 
 % Print a summary of the discovered mixture model.
-% The total message length of this model is 239.64 nits. 
+% The total message length of this model is 241.84 nits. 
 % The model discovered is x ~ 0.43 Exp(0.9) + 0.57 Exp(6.5)
 mm_Summary(mm);
 
@@ -33,6 +33,7 @@ mm_Summary(mm2);
 % Specifically, the two class model is approximately
 exp( -(mm.msglen - mm2.msglen) )
 % times more likely a posteriori than the three class model.
+% Also, observe that classes 2 and 3 are virtually identical.
 
 % Next, we use a mixture of gamma distributions instead of exponentials.
 mm3 = snob(x, {'gamma',1});

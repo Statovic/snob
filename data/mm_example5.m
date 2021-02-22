@@ -20,5 +20,16 @@ data = [X, Y];
 mm = snob(data, {'multi',1,'mvg',2:4,'mvg',5:10,'linreg',[11,1:p]},'k',4);
 
 % Print a summary of all the model parameters.
-% There are two classes. The total message length is 14,873 nits.
+% There are two classes. The total message length is ~14,876 nits.
 mm_Summary(mm);
+
+% Now, suppose we model AGE,BMI and BP as uncorrelated [spherical Gaussian]
+mm2 = snob(data, {'multi',1,'norm',2:4,'mvg',5:10,'linreg',[11,1:p]},'k',4);
+mm_Summary(mm2);
+
+% The codelengths are...
+[mm.msglen, mm2.msglen]
+
+% The uncorrelated model is 
+exp( -(mm2.msglen - mm.msglen) )
+% times more likely a posteriori than the MVG model.

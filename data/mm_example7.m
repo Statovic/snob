@@ -5,7 +5,7 @@ clear;
 rng(7);
 
 %% Generate data
-n = 200;
+n = 400;
 x = rand(n, 2)*2 - 1;   % x \in [-1,1]
 decr = .75;             % decision boundary radius
 y = 1*(sqrt(x(:,1).^2 + x(:,2).^2) > decr);

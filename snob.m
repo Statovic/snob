@@ -100,6 +100,7 @@
 %
 %   args        - optional arguments:
 %       'k', integer            - how many classes to start with [default=1]
+%       'maxk', integer         - maximum number of classes [1 < k <= maxk]
 %       'startmodel', struct    - start search from this mixture model [default=[]]
 %       'fixedstructure', bool  - allow SNOB to attempt splitting/merging of classes? [default=false]
 %       'display', bool         - show search progress [default=true]
@@ -158,6 +159,8 @@ defaultGreedy    = false;
 defaultFixedStructure = false;
 defaultMaxTryCombine  = 10;
 defaultStartModel     = [];
+defaultNoCost         = []; % TODO: add option to avoid costing specified columns
+defaultMaxK           = inf;
 
 expectedInit = {'random', 'kmeans++'};
 
@@ -174,6 +177,8 @@ addParameter(inParser, 'fixedstructure', defaultFixedStructure, @islogical);
 addParameter(inParser, 'greedy', defaultGreedy, @islogical);
 addParameter(inParser, 'maxtrycombine',  defaultMaxTryCombine, @(x) isnumeric(x) && isscalar(x) && (x > 0));
 addParameter(inParser, 'startmodel', defaultStartModel, @isstruct);
+addParameter(inParser, 'nocost', defaultNoCost, @(x) isnumeric(x));
+addParameter(inParser, 'maxk', defaultMaxK, @(x) isnumeric(x) && isscalar(x) && (x > 0));
 
 % Parse the input now
 parse(inParser, model_list, varargin{:});  
@@ -183,16 +188,29 @@ models    = inParser.Results.model_list;  % list of models
 mm        = inParser.Results.startmodel;  % did we get passed a model?
 
 opts = struct;                                      % hold all options here
-opts.nClasses       = inParser.Results.k;           % starting number of classes
-opts.Initialisation = inParser.Results.init;        % initialisation strategy
-opts.maxiter        = inParser.Results.maxiter;     % maximum number of search iterations
-opts.emmaxiter      = inParser.Results.emmaxiter;   % maximum number of EM iterations for a fixed model structure
-opts.display        = inParser.Results.display;     % verbose output
-opts.fixedstructure = inParser.Results.fixedstructure;     % do we attempt merger/split combos?
+opts.nClasses       = inParser.Results.k;           % starting number of classes [default k=1]
+opts.maxk           = inParser.Results.maxk;        % maximum number of classes [default kmax=inf]
+opts.Initialisation = inParser.Results.init;        % initialisation strategy [default 'kmeans++']
+opts.maxiter        = inParser.Results.maxiter;     % maximum number of search iterations [default maxiter=100]
+opts.emmaxiter      = inParser.Results.emmaxiter;   % maximum number of EM iterations for a fixed model structure [default emmaxiter=100]
+opts.display        = inParser.Results.display;     % verbose output [default display=true]
+opts.fixedstructure = inParser.Results.fixedstructure;     % do we attempt merger/split combos? [default fixedstructure=false]
 opts.greedy         = inParser.Results.greedy;      % if true, always pick the model with smallest message length; 
-                                                    % if false, pick model stochastically based
+                                                    % if false, pick model stochastically [default]
 opts.MaxTryCombines = inParser.Results.maxtrycombine;
 opts.SearchOptions  = optimoptions('fminunc','display','off');
+opts.NoCost         = inParser.Results.nocost;
+
+%% Check Options
+if(any(mod(opts.nClasses,1)))
+    error('k must be an integer greater than 0 and less than maxk');
+end
+if(opts.nClasses > opts.maxk)
+    error('k must be an integer greater than 0 and less than maxk');
+end
+if(any(mod(opts.maxk,1)))
+    error('maxk must be an integer greater than 0');
+end
 
 %% Process model types
 if(any(isinf(data(:))))

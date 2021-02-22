@@ -19,9 +19,11 @@ while not(done)
         
         %% Try structural changes?
         if(~mm.opts.fixedstructure)
-            [mm_s, msglen_s] = mm_TrySplits(mm, data);      % split           
-            [mm_c, msglen_c] = mm_TryCombine(mm, data);     % combine
-            [mm_a, msglen_a] = mm_TryAddClass(mm, data);    % add new class and re-assign
+            if(mm.nClasses < mm.opts.maxk)
+                [mm_s, msglen_s] = mm_TrySplits(mm, data);      % split           
+                [mm_a, msglen_a] = mm_TryAddClass(mm, data);    % add new class and re-assign                
+            end
+            [mm_c, msglen_c] = mm_TryCombine(mm, data);     % combine                
         else
             mm_c={}; mm_s={}; mm_a={}; msglen_s=inf; msglen_c=inf; msglen_a=inf;
         end        

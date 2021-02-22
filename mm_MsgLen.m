@@ -238,8 +238,7 @@ for k = 1:K
                 AssLen = h_theta + F_theta;                
                 
             %% Multivariate Gaussian model
-            case 'mvg'
-                
+            case 'mvg'                
                 d = mm.ModelTypes{i}.nDim;
                 nParams = d + d*(d+1)/2;
                 totalParams = totalParams + nParams;
@@ -256,8 +255,7 @@ for k = 1:K
                 h_theta = sum(log(Rmu)) + (d+1)*logDetSigma + trace(Rinv*Rinv')/2 + log(2)*d*(d+1)/2 + logmvgamma(d,(d+1)/2);
                 F_theta = d*(d+3)/4*log(Nk(k)) - d/2*log(2) -(d+2)/2*logDetSigma;
                 AssLen = h_theta + F_theta;                
-                
-                
+                                
             %% Univariate Gaussian model
             case 'Gaussian'
                 nParams = 2;
@@ -395,13 +393,7 @@ end
 
 % Constant terms
 % --------------
-gamma_d = -psi(1);
-if D > 0
-    c_d = -D/2*log(2*pi) + log(D*pi)/2 - gamma_d; 
-else
-    c_d = 0;
-end
-constant = c_d  - gammaln(K+1);
+constant = mml_const(D) - gammaln(K+1);
 
 % Total codelength for the mixture model 
 % [see pp. 294, Statistical and Inductive Inference by Minimum Message Length]
@@ -413,7 +405,7 @@ mm.Atheta = Atheta;         % assertion length for model parameters
 mm.constant = constant;     % quantization constant
 mm.msglen = Ak + Aa + Atheta + An_L + constant + log(n)/2;  % total codelength
 
-% Compute BIC and AIC
+% Compute AIC and BIC
 % -------------------
 mm.AIC = mm.L + (mm.nParams);
 mm.BIC = mm.L + (mm.nParams/2)*log(n);

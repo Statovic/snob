@@ -149,7 +149,7 @@ for k = wClasses
             Nk  = sum(r(ix));                   % n
             mu  = sum(bsxfun(@times, y(ix,:), r(ix))) / Nk;
             xmu = bsxfun(@minus, y(ix,:), mu);
-            Sigma = (bsxfun(@times, xmu, r(ix))'*xmu + eye(d))/ (Nk+d);
+            Sigma = (bsxfun(@times, xmu, r(ix))'*xmu + eye(d)) / (Nk+d);
             
             model.theta = [mu(:); Sigma(:)];                
                             

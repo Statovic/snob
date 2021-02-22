@@ -11,13 +11,16 @@ mm.class{K} = mm_CreateClass(mm.ModelTypes);
 mm.nClasses = K;
 
 % run kmeans 
-warning('off', 'stats:kmeans:FailedToConverge');    % supress kmeans++ warnings
-warning('off', 'stats:kmeans:MissingDataRemoved');
-[~,~,~,Dist] = kmeans(data, K);
-warning('on', 'stats:kmeans:FailedToConverge');   
-warning('on', 'stats:kmeans:MissingDataRemoved');
+% warning('off', 'stats:kmeans:FailedToConverge');    % supress kmeans++ warnings
+% warning('off', 'stats:kmeans:MissingDataRemoved');
+% [~,~,~,Dist] = kmeans(data, K);
+% warning('on', 'stats:kmeans:FailedToConverge');   
+% warning('on', 'stats:kmeans:MissingDataRemoved');
+[~, Dist] = kmeansinit(data, K);
 
 R  = bsxfun(@rdivide, Dist, sum(Dist,2));
+% Heuristic: stop points being assigned 100% to a single class
+R = bsxfun(@rdivide, 0.1+R, sum(0.1+R,2)); 
 ix = sum(isnan(Dist),2) > 0;
 if(any(ix))                
     t       = rand(sum(ix), K);
@@ -26,7 +29,7 @@ end
 
 mm.r  = R;
 mm.Nk = sum(mm.r,1)';
-mm.a  = mm.Nk / sum(mm.Nk);
+mm.a = (mm.Nk+1/2) ./ (mm.N+K/2); %mm.a  = mm.Nk / sum(mm.Nk);
 
 % mm.a = zeros(K,1);
 % mm.r = ones(size(data,1),K) * 0.05;

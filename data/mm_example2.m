@@ -17,8 +17,8 @@ mm = snob(acidity, {'norm',1}, 'k',5);
 
 % Print a summary of all the components (parameters and structure) of the
 % mixture model we have discovered. Snob discovered two classes; one of the
-% classes [N(mu = 4.3, sigma = 0.4)] has a sample size n~92, the other
-% class [N(mu = 6.3, sigma = 0.5)] has a smaller sample size n~63. 
+% classes [N(mu = 4.3, sigma = 0.4)] has n~92 data points, the other
+% class [N(mu = 6.3, sigma = 0.5)] has n~63. 
 %
 % The total message length of this model is ~209 nits.
 mm_Summary(mm);
@@ -30,7 +30,7 @@ mm_PlotModel1d(mm, acidity, 1);
 mm2 = snob(acidity, {'norm',1}, 'k',3,'fixedstructure',true);
 
 % Print a summary of the new model. 
-% The total message length of the 3-class model is ~215 nits; 6 nits longer than
+% The total message length of the 3-class model is ~217 nits; ~5.4 nits longer than
 % the two class model. 
 mm_Summary(mm2);
 
