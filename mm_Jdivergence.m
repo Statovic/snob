@@ -49,6 +49,29 @@ for i = wModels
                     mu2 = b(1); v2 = b(2);
                     
                     f = (mu1-mu2)^2/2*(1/v1+1/v2) + 1/2*(v1/v2 + v2/v1 - 2);
+                
+                % Inverse Gaussian distribution
+                case 'invGaussian'
+                    a = mm.class{j}.model{i}.theta; % Model 1 parameters
+                    b = mm.class{k}.model{i}.theta; % Model 2 parameters
+                    mu1 = a(1); lam1 = a(2);
+                    mu2 = b(1); lam2 = b(2);  
+                    
+                    f = 1/lam2*(lam1/2 + 1/2/mu1 + mu1/2/mu2^2 - 1/mu2) - 1/2;
+                    f = f + 1/lam1*(lam2/2 + 1/2/mu2 + mu2/2/mu1^2 - 1/mu1) - 1/2;
+                    f = f / 2;
+                
+                % Laplace distribution
+                case 'Laplace'
+                    a = mm.class{j}.model{i}.theta; % Model 1 parameters                    
+                    b = mm.class{k}.model{i}.theta; % Model 2 parameters
+                    mu1 = a(1); lam1 = a(2);
+                    mu2 = b(1); lam2 = b(2);     
+                    
+                    absmu = abs(mu1-mu2);
+                    f = (lam1*exp(-absmu/lam1) + lam2*(-log(lam1)+log(lam2) - 1) - absmu)/lam2;
+                    f = f + (lam2*exp(-absmu/lam2) + lam1*(-log(lam2)+log(lam1) - 1) - absmu)/lam1;
+                    f = f / 2;
                     
                 % Weibull distribution
                 case 'weibull'

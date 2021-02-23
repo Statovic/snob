@@ -30,7 +30,6 @@ for k = wClasses
             
             %% Univariate Weibull distribution
             case 'weibull'
-
             theta = fminunc(@(X) weibull_msglen(y(ix), r(ix), X(1), X(2)), [log(mean(y(ix))), 0], mm.opts.SearchOptions);
             model.theta = exp(theta(:));
             
@@ -179,7 +178,7 @@ for k = wClasses
                 
             % Sufficient statstics
             S1 = sum(r(ix) .* y(ix));
-            S2 = sum((r(ix) ./ y(ix)));
+            S2 = sum(r(ix) ./ y(ix));
             
             % Estimate parameters
             Nk = sum(r(ix));
@@ -293,8 +292,8 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function f = weibull_msglen(x, r, log_lambda, log_k)
 
-k = exp(log_k);
-lambda = exp(log_lambda);
+k = min(1e2,exp(log_k));            % Limit k and lambda to avoid numerical issues
+lambda = min(1e2,exp(log_lambda));
 
 F = -log_lambda;
 h = log1p(lambda^2) + log1p(k^2);
@@ -304,7 +303,7 @@ z = x./lambda;
 logz = log(z);
 z2B = exp(k.*logz);
 L = -((k-1).*logz + log(k./lambda)) + z2B;
-L(z == -Inf) = +Inf;
+%L(isinf(L)) = realmax;
 
 f = F + h + r'*L;
 

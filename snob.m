@@ -30,7 +30,7 @@
 %               p(X|kappa,mu)    = kappa^((d/2)-1)/(2*pi)^(d/2)/I_{d/2-1}(kappa) exp(kappa * mu' x)
 %                                   ||X|| = ||mu|| = 1, kappa > 0, X,mu \in R^d
 %   (.)    Inverse Gaussian distribution ('igauss')
-%               p(X|mu,lambda)   = sqrt(lambda/2/pi/x^3) * exp(-lambda*(x-mu)^2/2/mu^2/x),
+%               p(X|mu,lambda)   = sqrt(1/2/pi/lambda/x^3) * exp(-(x-mu)^2/2/mu^2/x/lambda),
 %                                   X > 0, mu > 0, lambda > 0
 %   (.)    Poisson distribution ('poisson')
 %               p(X|lambda)      = lambda^x * exp(-lambda) / x!,
