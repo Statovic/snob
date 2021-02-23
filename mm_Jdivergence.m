@@ -61,6 +61,20 @@ for i = wModels
                     f = f + 1/lam1*(lam2/2 + 1/2/mu2 + mu2/2/mu1^2 - 1/mu1) - 1/2;
                     f = f / 2;
                 
+                % Multivariate Gaussian distribution
+                case 'mvg'
+                    d = mm.ModelTypes{i}.nDim;  % d-variate Gaussian
+                    theta1 =  mm.class{j}.model{i}.theta;
+                    theta2 = mm.class{k}.model{i}.theta; % Model 2 parameters                    
+                    mu1 = theta1(1:d);
+                    mu2 = theta2(1:d);
+                    Sigma1 = reshape(theta1(d+1:end),d,d);
+                    Sigma2 = reshape(theta2(d+1:end),d,d);
+                    
+                    f = mvgkl(mu1, Sigma1, mu2, Sigma2);
+                    f = f + mvgkl(mu2, Sigma2, mu1, Sigma1);
+                    f = f / 2;
+                                                    
                 % Laplace distribution
                 case 'Laplace'
                     a = mm.class{j}.model{i}.theta; % Model 1 parameters                    
@@ -69,8 +83,17 @@ for i = wModels
                     mu2 = b(1); lam2 = b(2);     
                     
                     absmu = abs(mu1-mu2);
-                    f = (lam1*exp(-absmu/lam1) + lam2*(-log(lam1)+log(lam2) - 1) - absmu)/lam2;
-                    f = f + (lam2*exp(-absmu/lam2) + lam1*(-log(lam2)+log(lam1) - 1) - absmu)/lam1;
+                    f = (lam1*exp(-absmu/lam1) + lam2*(-log(lam1)+log(lam2) - 1) + absmu)/lam2;
+                    f = f + (lam2*exp(-absmu/lam2) + lam1*(-log(lam2)+log(lam1) - 1) + absmu)/lam1;
+                    f = f / 2;
+                    
+                % Multinomial distribution
+                case 'multi'
+                    a = mm.class{j}.model{i}.theta; % Model 1 parameters                    
+                    b = mm.class{k}.model{i}.theta; % Model 2 parameters
+                    
+                    f = sum(a .* log(a./b));
+                    f = f + sum(b .* log(b./a));
                     f = f / 2;
                     
                 % Weibull distribution
