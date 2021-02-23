@@ -297,8 +297,14 @@ k = exp(log_k);
 lambda = exp(log_lambda);
 
 F = -log_lambda;
-h = log(1+lambda^2) + log(1+k^2);
-L = -log_k + log_lambda + (k-1)*log_lambda - (k-1)*log(x) + (x./lambda).^k;
+h = log1p(lambda^2) + log1p(k^2);
+
+%L = -log_k + k*log_lambda - (k-1)*log(x) + (x./lambda).^k;
+z = x./lambda;
+logz = log(z);
+z2B = exp(k.*logz);
+L = -((k-1).*logz + log(k./lambda)) + z2B;
+L(z == -Inf) = +Inf;
 
 f = F + h + r'*L;
 
