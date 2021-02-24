@@ -332,7 +332,7 @@ K = size(w,2);
 V = w'*w;
 
 % Initial guess for beta
-[v,d] = eig(V/N);
+[v,d] = eigs(V/N,1);
 beta = v(:,end);
 b2 = d(end);
 beta = beta * sqrt(b2);
@@ -340,6 +340,7 @@ beta = beta * sqrt(b2);
 %% Estimate beta
 done = false;
 all_zeros = false;
+reltol = 1e-4;
 while(~done)
     b2 = beta'*beta;    
     
@@ -355,8 +356,12 @@ while(~done)
        sigma = sqrt( sum(w.^2, 1)' / (N-1) ./ (1+beta.^2) );
        Y = V ./ (sigma * sigma');
        beta = Y*beta * (1 - K/(N-1)/b2) / (N-1) / (1+b2);      
-       done = norm(beta - beta_old) < 1e-3;
-   end
+              
+       %done = norm(beta - beta_old) < 1e-3;
+       if(norm((beta - beta_old) ./ (1.0 + abs(beta_old)), Inf) < reltol)
+            done = true;
+       end         
+    end
 end
 
 %% Other parameters

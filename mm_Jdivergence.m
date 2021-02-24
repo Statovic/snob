@@ -27,6 +27,17 @@ for i = wModels
                     
                     f = 1/2*(-2 + a/b + b/a);   % J divergence
                     
+                % gamma distribution
+                case 'gamma'
+                    a = mm.class{j}.model{i}.theta; % Model 1 parameters
+                    b = mm.class{k}.model{i}.theta; % Model 2 parameters
+                    mu1 = a(1); v1 = a(2);
+                    mu2 = b(1); v2 = b(2);  
+                    
+                    f = gammaln(v1) - gammaln(v2) + v1*(psi(v1) - 1) + v2*(log(mu2*v1) - log(mu1*v2) - psi(v1) + mu1/mu2);
+                    f = f + gammaln(v2) - gammaln(v1) + v2*(psi(v2) - 1) + v1*(log(mu1*v2) - log(mu2*v1) - psi(v2) + mu2/mu1);
+                    f = f / 2;
+                
                 % Geometric distribution
                 case 'geometric'
                     a = mm.class{j}.model{i}.theta; % Model 1 parameter
@@ -64,7 +75,7 @@ for i = wModels
                 % Multivariate Gaussian distribution
                 case 'mvg'
                     d = mm.ModelTypes{i}.nDim;  % d-variate Gaussian
-                    theta1 =  mm.class{j}.model{i}.theta;
+                    theta1 = mm.class{j}.model{i}.theta;
                     theta2 = mm.class{k}.model{i}.theta; % Model 2 parameters                    
                     mu1 = theta1(1:d);
                     mu2 = theta2(1:d);
@@ -74,6 +85,28 @@ for i = wModels
                     f = mvgkl(mu1, Sigma1, mu2, Sigma2);
                     f = f + mvgkl(mu2, Sigma2, mu1, Sigma1);
                     f = f / 2;
+                    
+                % Single Factor Analysis model
+                case 'sfa'
+                    d = mm.ModelTypes{i}.nDim;  % d-variate Gaussian
+                    theta1 = mm.class{j}.model{i}.theta; % Model 1 parameters                           
+                    theta2 = mm.class{k}.model{i}.theta; % Model 2 parameters                           
+                    
+                    % extract parameters
+                    mu1 = theta1(1:d);
+                    mu2 = theta2(1:d); 
+                    s1 = theta1(d+1:2*d);
+                    s2 = theta2(d+1:2*d);
+                    a1 = theta1((2*d+1):end);
+                    a2 = theta2((2*d+1):end);   % check collapsed!
+                    
+                    % compute SFA covariance
+                    Sigma1 = a1*a1' + diag(s1.^2);
+                    Sigma2 = a2*a2' + diag(s2.^2);
+                    
+                    f = mvgkl(mu1, Sigma1, mu2, Sigma2);
+                    f = f + mvgkl(mu2, Sigma2, mu1, Sigma1);
+                    f = f / 2;                    
                                                     
                 % Laplace distribution
                 case 'Laplace'
@@ -107,7 +140,7 @@ for i = wModels
                     f = log(k1) - k1*log(lam1) - log(k2) + k2*log(lam2) + (k1-k2)*(log(lam1) - g/k1) + (lam1/lam2)^k2*gamma(k2/k1+1) - 1;
                     f = f + log(k2) - k2*log(lam2) - log(k1) + k1*log(lam1) + (k2-k1)*(log(lam2) - g/k2) + (lam2/lam1)^k1*gamma(k1/k2+1) - 1;
                     f = f / 2;
-                
+                               
                 otherwise
                     error('Model not available');                    
             end
