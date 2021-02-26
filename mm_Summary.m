@@ -52,6 +52,11 @@ for k = 1:nClasses
                 fprintf(']\n');                
                                 
 
+            %% beta distribution
+            case 'beta'
+                fprintf('%20s', 'beta');
+                fprintf('%10s = %7.2f%10s = %7.2f', 'a',theta(1),'b',theta(2));            
+            
             %% Weibull distribution
             case 'weibull'
                 fprintf('%20s', 'Weibull');

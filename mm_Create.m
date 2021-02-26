@@ -41,11 +41,6 @@ switch opts.Initialisation
     case 'kmeans++'
         
         if(K > 1)
-%             warning('off', 'stats:kmeans:FailedToConverge');    % supress kmeans++ warnings
-%             warning('off', 'stats:kmeans:MissingDataRemoved');
-%             [~,~,~,Dist] = kmeans(data, K);
-%             warning('on', 'stats:kmeans:FailedToConverge');    
-%             warning('on', 'stats:kmeans:MissingDataRemoved');
             [~, Dist] = kmeansinit(data, K);
             
             R = bsxfun(@rdivide, Dist, sum(Dist,2));

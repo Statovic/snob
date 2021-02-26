@@ -16,12 +16,21 @@ Aa = (K-1)*log(n)/2 - sum(log(a))/2 - gammaln(K);
 
 % Detail length and assertion length for kn
 % -----------------------------------------
-p = exp(-mm_Likelihood(mm, data, 1:mm.nModelTypes));
-p(p==0) = realmin; 
-r = bsxfun(@rdivide, p, sum(p,2));
+% p = exp(-mm_Likelihood(mm, data, 1:mm.nModelTypes));
+% p(p==0) = realmin; 
+% r = bsxfun(@rdivide, p, sum(p,2));
+p = -mm_Likelihood(mm, data, 1:mm.nModelTypes);
+p = max(min(p, 700), -700); % log(p) \in [-700, 700]
+ep = exp(p);
+if(mm.nClasses > 1)
+    r = bsxfun(@rdivide, ep, exp(logsumexp(p)));
+else
+    r = ones(mm.N, 1);
+end
 Nk = sum(r,1);      % how many things in each class
 
-An_L = -sum(log(sum(p,2)));
+%An_L = -sum(log(sum(ep,2)));
+An_L = -sum(logsumexp(p));
 mm.L = An_L;
 
 % Assertion length for the hyperparameters
@@ -36,8 +45,8 @@ for i = 1:mm.nModelTypes
                 tau(k) = mm.class{k}.model{i}.theta(2);
             end
             a_tau = FindPriorRange(tau);
-            % mu hyperparameters; each coded as log(n)/2
-            % tau hyperparameter coded as logstar(a)
+            % two mu hyperparameters; each coded as log(n)/2
+            % one tau hyperparameter coded as logstar(a)
             Atheta = Atheta + sum(log(Nk)) + K*log(2*a_tau) + logstar(a_tau);   
             
         %% Laplace hyperparameters mu \in [mu0,mu1], tau \in [exp(-a),exp(+a)]
@@ -47,17 +56,19 @@ for i = 1:mm.nModelTypes
                 tau(k) = mm.class{k}.model{i}.theta(2);
             end
             a_tau = FindPriorRange(tau);
-            % mu hyperparameters; each coded as log(n)/2
-            % tau hyperparameter coded as logstar(a)
+            % two mu hyperparameters; each coded as log(n)/2
+            % one tau hyperparameter coded as logstar(a)
             Atheta = Atheta + sum(log(Nk)) + K*log(2*a_tau) + logstar(a_tau);             
             
+        %% Multivariate Gaussian
         case 'mvg'
             
             d = mm.ModelTypes{i}.nDim;
             Atheta = Atheta + sum(log(Nk)) * d;
-            
+
+        %% Single factor analysis model
         case 'sfa'
-                        
+                       
             d = mm.ModelTypes{i}.nDim;
             sigma = zeros(K,d);
             for k =1:K
@@ -65,7 +76,9 @@ for i = 1:mm.nModelTypes
             end
             a_sigma = FindPriorRange(sigma(:));            
             
-            Atheta = Atheta + sum(log(Nk))*d + K*d*log(a_sigma) + logstar(a_sigma);   
+            % two mu hyperparameters for each column of data; each coded as log(n)/2
+            % one sigma hyperparameter coded as logstar(a_star)            
+            Atheta = Atheta + sum(log(Nk))*d + K*d*log(2*a_sigma) + logstar(a_sigma);   
             
             
         %% Inverse Gaussian hyperparameters lambda \in [exp(-a), exp(+a)]
@@ -109,6 +122,20 @@ for k = 1:K
         model = mm.class{k}.model{i};           % model                
         switch model.type
 
+            %% beta distribution
+            case 'beta'
+                nParams = 2;
+                totalParams = totalParams + nParams;
+                
+                ap = model.theta(1);
+                bp = model.theta(2);  
+                
+                pgterm = psi(1,ap)*psi(1,bp) - (psi(1,ap)+psi(1,bp))*psi(1,ap+bp);
+                h_theta = -2*log(2) + 2*log(pi) + log1p(ap^2) + log1p(bp^2);
+                F_theta = log(Nk(k)) + 0.5*log(pgterm);             
+                
+                AssLen = h_theta + F_theta;                  
+            
             %% von Mises-Fisher distribution
             case 'vmf'
                 nParams = mm.ModelTypes{i}.nDim;
@@ -144,7 +171,7 @@ for k = 1:K
                 
                 lambda = model.theta(1);
                 k_wbl = model.theta(2);
-                h_theta = -log(2) + log(pi) + log(1+lambda^2) -log(2) + log(pi) + log(1+k_wbl^2);
+                h_theta = -log(2) + log(pi) + log1p(lambda^2) -log(2) + log(pi) + log1p(k_wbl^2);
                 F_theta = log(pi) - log(6)/2 - log(lambda) + log(Nk(k));
                 AssLen = h_theta + F_theta;   
                 
@@ -167,7 +194,7 @@ for k = 1:K
                 totalParams = totalParams + nParams;
                 
                 lambda = model.theta;
-                h_theta = -log(2) + log(pi) + log(1+lambda^2);
+                h_theta = -log(2) + log(pi) + log1p(lambda^2);
                 F_theta = log(Nk(k))/2 - log(lambda);
                 AssLen = h_theta + F_theta;
                 
@@ -179,7 +206,7 @@ for k = 1:K
                 mu = model.theta(1);
                 phi = model.theta(2);
                 
-                h_theta = -log(2) + 2*log(pi) + log(1+mu^2) + log(phi)/2 + log(1 + phi);
+                h_theta = -log(2) + 2*log(pi) + log1p(mu^2) + log(phi)/2 + log1p(phi);
                 F_theta =  log(Nk(k))- log(mu) + 1/2*log(phi*psi(1,phi) - 1);
                 AssLen = h_theta + F_theta;
             
@@ -248,11 +275,10 @@ for k = 1:K
                 
                 R = cholcov(Sigma,0);              
                 logDetSigma = 2*sum(log(diag(R)));
-                Rinv = R\eye(d);
                 
                 Rmu = mm.ModelTypes{i}.mu1 - mm.ModelTypes{i}.mu0;
                 
-                h_theta = sum(log(Rmu)) + (d+1)*logDetSigma + trace(Rinv*Rinv')/2 + log(2)*d*(d+1)/2 + logmvgamma(d,(d+1)/2);
+                h_theta = sum(log(Rmu)) + (d+1)*logDetSigma + trace(R\(R'\eye(d)))/2 + log(2)*d*(d+1)/2 + logmvgamma(d,(d+1)/2);
                 F_theta = d*(d+3)/4*log(Nk(k)) - d/2*log(2) -(d+2)/2*logDetSigma;
                 AssLen = h_theta + F_theta;                
                                 
@@ -274,7 +300,7 @@ for k = 1:K
                 totalParams = totalParams + nParams;
                 
                 lambda = model.theta;
-                h_theta = log(pi) + log(lambda)/2 + log(1+lambda);
+                h_theta = log(pi) + log(lambda)/2 + log1p(lambda);
                 F_theta = log(Nk(k))/2 - log(lambda)/2;
                 AssLen = h_theta + F_theta;
                 
@@ -286,7 +312,7 @@ for k = 1:K
                 mu = model.theta(1);
                 phi = model.theta(2);
                 
-                h_theta = -2*log(2) + 2*log(pi) + log(1+phi^2) + log(1+mu^2);
+                h_theta = -2*log(2) + 2*log(pi) + log1p(phi^2) + log1p(mu^2);
                 numerator = mu + phi*(mu + phi) * psi(1,phi)*((phi/(mu+phi))^phi - 1);
                 F_theta = log(Nk(k)) - log(mu)/2 - log(mu+phi) + log(-numerator)/2;                
                 AssLen = h_theta + F_theta;                

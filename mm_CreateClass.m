@@ -6,6 +6,11 @@ for i = 1:length(ModelTypes)
     %% Type of model
     switch ModelTypes{i}.type
 
+        case 'beta'
+            class.model{i}.type  = 'beta';               % type
+            class.model{i}.Ivar  = ModelTypes{i}.Ivar;   % which variable in the data?
+            class.model{i}.theta = rand(2,1)*5;          % [a,b]            
+            
         case 'sfa'
             d = ModelTypes{i}.nDim;
             mu = randn(d,1);

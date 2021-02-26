@@ -19,6 +19,13 @@ for k = 1:K
         
         switch m.type            
             
+            %% beta distribution
+            case 'beta'
+                ap = m.theta(1);
+                bp = m.theta(2);
+                
+                subL(I) = betaln(ap,bp) - (ap-1)*log(Y(I, m.Ivar)) - (bp-1)*log(1-Y(I, m.Ivar));
+            
             %% von Mises-Fisher 
             case 'vmf' 
                 kappa = m.theta(1);

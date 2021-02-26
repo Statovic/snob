@@ -43,12 +43,20 @@ switch mm.ModelTypes{wModel}.type
             min_mvg = min(min_mvg, mu_mvg' - 3*sqrt(Sigma_mvg(1:3:4)));
             max_mvg = max(max_mvg, mu_mvg' + 3*sqrt(Sigma_mvg(1:3:4)));
         end        
-        
-    case 'exp'
+
+    case 'beta'
         for k = 1:K
             lam = mm.class{k}.model{wModel}.theta(1);
             mu(k) = lam;
             tau(k) = lam^2;
+        end 
+        
+    case 'exp'
+        for k = 1:K
+            ap = mm.class{k}.model{wModel}.theta(1);
+            bp = mm.class{k}.model{wModel}.theta(2);
+            mu(k) = ap/(ap+bp);
+            tau(k) = ap*bp/(ap+bp)^2/(ap+bp+1);
         end 
         
     case 'weibull'
@@ -98,7 +106,7 @@ switch mm.ModelTypes{wModel}.type
         end        
 
     otherwise
-        error('This type of model cannot be graphed');
+        error('Plotting not implemented for this type of model');
 end
 
 min_val = mu - 3*sqrt(tau);
@@ -107,7 +115,9 @@ min_val = min(min_val);
 max_val = max(max_val);
 
 switch mm.ModelTypes{wModel}.type
-    case 'mvg'
+    case 'beta'
+        min_val = 0; 
+        max_val = 1;
         
     case 'weibull'
         min_val = max(min_val, 1e-3);

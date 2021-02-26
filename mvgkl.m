@@ -2,7 +2,19 @@
 %    KL = MVGKL(m1,S1,m2,S2) returns the KL divergence between two
 %    multivariate Gaussian distributions P1 and P2. P1 has parameters m1
 %    (mean) and S1 (covariance matrix). P2 has parameters M2 (mean) and S2
-%    (covariance matrix).
+%    (covariance matrix). The covariance matrices S1 and S2 must be
+%    positive definite. 
+%
+%  Examples:
+%
+%  1) Univariate Gaussians: KL( N(-1,1) || N(+1,1) )
+%  mu1 = -1; mu = +1; s1 = 1; s2 = 1;   
+%  mvgkl(mu1, s1^2, mu2, s2^2)
+%
+%  2) Multivariate Gaussians: KL( N(mu1,S1) || N(mu2,S2) )
+%  mu1 = [-1 -1]'; mu2 = [+1, +1]';
+%  S1 = [1 0.5; 0.5 1]; S2 = [1 -0.7; -0.7 1];
+%  mvgkl(mu1, S1, mu2, S2)
 %
 % (c) Copyright Enes Makalic and Daniel F. Schmidt, 2019-
 function kl = mvgkl(m1, S1, m2, S2)
@@ -27,7 +39,7 @@ d = length(m1);
 [R1,P1] = cholcov(S1,0); % Cholesky decomposition of covariance matrices
 [R2,P2] = cholcov(S2,0);
 
-if(any([P1,P2]))
+if(any([P1,P2]) || any(isnan([P1,P2])))
     error('covariance matrices are not positive definite');
 end
 

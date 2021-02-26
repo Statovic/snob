@@ -53,6 +53,9 @@
 %   (.)    Single factor analysis model ('sfa') 
 %               x_nk             = mu_k + v_n a_k + sigma_k*r_nk,
 %                                   {v_n, {r_nk, k=1,...,K},n=1,...,N} ~ N(0,1)
+%   (.)    Beta distribution ('beta')
+%               p(X|a,b) = x^(a-1) (1-x)^(b-1) / Beta(a,b)
+% 
 %   (.)    Gaussian linear regression ('linreg')
 %               p(Y|X,theta)     = Gaussian(b0 + x'*b, sigma^2)
 %                                   Y \in R, b0 \in R, b \ in R^d, sigma>0
@@ -67,21 +70,22 @@
 %                 The format is: {'model',cols, 'model',cols, etc}
 %       
 %                 'model' is one of:
-%                       'norm'      -> Univariate normal distribution
-%                       'gamma'     -> Univariate gamma distribution
-%                       'laplace'   -> Univariate Laplace distribution
-%                       'mvg'       -> Multivariate normal distribution 
-%                       'weibull'   -> Weibull distribution
+%                       'beta'      -> Beta distribution
 %                       'exp'       -> Exponential distribution
-%                       'vmf'       -> von Mises-Fisher distribution
-%                       'igauss'    -> Inverse Gaussian distribution
-%                       'poisson'   -> Poisson distribution
-%                       'negb'      -> Negative binomial distribution
+%                       'gamma'     -> Univariate gamma distribution
 %                       'geometric' -> Geometric distribution
-%                       'multi'     -> Multinomial distribution
-%                       'sfa'       -> Multivariate normal distribution (single factor analysis)
+%                       'igauss'    -> Inverse Gaussian distribution
+%                       'laplace'   -> Univariate Laplace distribution
 %                       'linreg'    -> Gaussian linear regression
 %                       'logreg'    -> Logistic regression
+%                       'multi'     -> Multinomial distribution
+%                       'mvg'       -> Multivariate normal distribution 
+%                       'negb'      -> Negative binomial distribution
+%                       'norm'      -> Univariate normal distribution
+%                       'poisson'   -> Poisson distribution
+%                       'sfa'       -> Multivariate normal distribution (single factor analysis)
+%                       'vmf'       -> von Mises-Fisher distribution
+%                       'weibull'   -> Weibull distribution
 %
 %                Except in the case of the 'linreg' model, the vector cols denotes which columns the
 %                model applies to. That is, 

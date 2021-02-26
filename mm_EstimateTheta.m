@@ -17,6 +17,16 @@ for k = wClasses
         
         switch model.type
             
+            %% Beta distribution
+            case 'beta'
+            
+            Nk = sum(r(ix)); 
+            S1 = sum(r(ix) .* log(y(ix)));     % sum log(y_i)
+            S2 = sum(r(ix) .* log(1 - y(ix)));
+
+            theta = fminunc(@(X) beta_msglen(Nk, S1, S2, X(1), X(2)), [0, 0], mm.opts.SearchOptions);
+            model.theta = exp(theta);
+            
             %% von Mises-Fisher distribution
             case 'vmf'
             
@@ -31,7 +41,7 @@ for k = wClasses
             %% Univariate Weibull distribution
             case 'weibull'
             theta = fminunc(@(X) weibull_msglen(y(ix), r(ix), X(1), X(2)), [log(mean(y(ix))), 0], mm.opts.SearchOptions);
-            model.theta = exp(theta(:));
+            model.theta = max(1e-2, exp(theta(:)));
             
             %% Univariate exponential
             case 'exp'
@@ -292,8 +302,8 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function f = weibull_msglen(x, r, log_lambda, log_k)
 
-k = min(1e2,exp(log_k));            % Limit k and lambda to avoid numerical issues
-lambda = min(1e2,exp(log_lambda));
+k = exp(max(min(log_k, 1e2), -1e2));
+lambda = exp(max(min(log_lambda, 1e2), -1e2));
 
 F = -log_lambda;
 h = log1p(lambda^2) + log1p(k^2);
@@ -382,12 +392,28 @@ mu = exp(logmu);
 phi = exp(logphi);
 
 L = -gammaln(x+phi) + gammaln(phi) + gammaln(x+1) - x .* log(mu/(mu+phi)) - phi*log(phi/(mu+phi));
-h = -2*log(2) + 2*log(pi) + log(1+phi^2) + log(1+mu^2);
+h = -2*log(2) + 2*log(pi) + log1p(phi^2) + log1p(mu^2);
 
 numerator = mu + phi*(mu + phi) * psi(1,phi)*((phi/(mu+phi))^phi - 1);
 J = log(n) - log(mu)/2 - log(mu+phi) + log(-numerator)/2;
 
 f = r'*L + h + J;
+
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function f = beta_msglen(Nk, S1, S2, loga, logb)
+
+a = exp(loga);
+b = exp(logb);
+
+L = -(a-1)*S1 - (b-1)*S2 + Nk*betaln(a,b);
+
+pgterm = psi(1,a)*psi(1,b) - (psi(1,a)+psi(1,b))*psi(1,a+b);
+h = -2*log(2) + 2*log(pi) + log1p(a^2) + log1p(b^2);
+J = log(Nk) + 0.5*log(pgterm);
+
+f = h + J + L;
 
 end
 

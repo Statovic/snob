@@ -32,6 +32,13 @@ for k = wClass
         
         switch m.type            
             
+            %% Beta
+            case 'beta'
+                ap = m.theta(1);
+                bp = m.theta(2);
+                
+                subL(I) = betaln(ap,bp) - (ap-1)*log(Y(I, m.Ivar)) - (bp-1)*log(1-Y(I, m.Ivar));
+            
             %% Weibull
             case 'weibull'
                 lambda = m.theta(1);
@@ -157,6 +164,7 @@ end
 
 %% Finally, combine them to get our probability density function
 p = sum(exp(-L(:,wClass)),2);
-L = -log(p);
+%L = -log(p);
+%L = -logsumexp(-L(:,wClass));
 
 end

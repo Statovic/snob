@@ -12,11 +12,11 @@ x = [exprnd(5, 60, 1); exprnd(1, 40, 1)];
 %     (1) the data is modelled using a univariate exponential distribution: {'exp',1}
 %     (2) Snob will automatically attempt to discover the optimal number of
 %     mixtures (subpopulations)
-mm = snob(x, {'exp',1});
+mm = snob(x, {'exp',1},'k',5);
 
 % Print a summary of the discovered mixture model.
 % The total message length of this model is 241.84 nits. 
-% The model discovered is x ~ 0.43 Exp(0.9) + 0.57 Exp(6.5)
+% The model discovered is x ~ 0.43 Exp(0.9) + 0.57 Exp(6.4)
 mm_Summary(mm);
 
 % What if we fit three sub-populations to this data?

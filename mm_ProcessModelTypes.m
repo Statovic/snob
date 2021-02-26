@@ -17,6 +17,31 @@ end
 %% Check that model type i was specified correctly
 switch lower(model_list{i})
     
+    %% Beta distribution
+    case {'beta'}
+        %% Basic data  
+        for j = 1:length(cols)
+            ModelTypes{k}.type = 'beta';
+            ModelTypes{k}.Ivar = cols(j);            
+            ModelTypes{k}.MinMembers = 5;        
+            
+            %% Error checking
+            if(VarsUsed(cols(j)))
+                error(['Data column ', int2str(cols(j)), ': multiple models defined']);
+            end               
+            
+            ix = ~isnan(data(:,ModelTypes{k}.Ivar));     
+            y = data(ix,ModelTypes{k}.Ivar);
+            if((min(y) < 0) || (max(y) > 1))
+                error(['Data column ', int2str(cols(j)), ': must be in [0,1]']);
+            end 
+            if(std(y) == 0)
+                error(['Data column ', int2str(cols(j)), ': zero variance']);
+            end  
+            
+            k = k + 1;
+        end      
+    
     %% Univariate exponential distribution
     case {'exp','exponential'}
                         
@@ -24,7 +49,7 @@ switch lower(model_list{i})
         for j = 1:length(cols)
             ModelTypes{k}.type = 'exp';
             ModelTypes{k}.Ivar = cols(j);            
-            ModelTypes{k}.MinMembers = 2;        
+            ModelTypes{k}.MinMembers = 5;        
             
             %% Error checking
             if(VarsUsed(cols(j)))
@@ -49,7 +74,7 @@ switch lower(model_list{i})
         for j = 1:length(cols)
             ModelTypes{k}.type = 'gamma';
             ModelTypes{k}.Ivar = cols(j);            
-            ModelTypes{k}.MinMembers = 4;        
+            ModelTypes{k}.MinMembers = 5;        
             
             %% Error checking
             if(VarsUsed(cols(j)))
@@ -75,7 +100,7 @@ switch lower(model_list{i})
         for j = 1:length(cols)
             ModelTypes{k}.type = 'invGaussian';
             ModelTypes{k}.Ivar = cols(j);    
-            ModelTypes{k}.MinMembers = 4;
+            ModelTypes{k}.MinMembers = 5;
 
             %% Error checking
             if(VarsUsed(cols(j)))
@@ -103,7 +128,7 @@ switch lower(model_list{i})
         for j = 1:length(cols)                
             ModelTypes{k}.type = 'multi';
             ModelTypes{k}.Ivar = cols(j);         
-            ModelTypes{k}.MinMembers = 1;
+            ModelTypes{k}.MinMembers = 5;
             
             ix = ~isnan(data(:,ModelTypes{k}.Ivar));
             y = data(ix,ModelTypes{k}.Ivar);                     
@@ -168,7 +193,7 @@ switch lower(model_list{i})
         
         d = length(CovIx);
         ModelTypes{k}.nDim = d;
-        ModelTypes{k}.MinMembers = 3;
+        ModelTypes{k}.MinMembers = 5;
         
         ix = ~any(isnan(data(:,CovIx)),2);
         y = data(ix, CovIx);
@@ -182,7 +207,7 @@ switch lower(model_list{i})
         for j = 1:length(cols)        
             ModelTypes{k}.type = 'negb';
             ModelTypes{k}.Ivar = cols(j);
-            ModelTypes{k}.MinMembers = 4;
+            ModelTypes{k}.MinMembers = 5;
 
             %% Error checking
             if(VarsUsed(cols(j)))
@@ -212,7 +237,7 @@ switch lower(model_list{i})
         for j = 1:length(cols)        
             ModelTypes{k}.type = 'Gaussian';
             ModelTypes{k}.Ivar = cols(j);
-            ModelTypes{k}.MinMembers = 4;
+            ModelTypes{k}.MinMembers = 5;
 
             %% Error checking
             if(VarsUsed(cols(j)))
@@ -240,7 +265,7 @@ switch lower(model_list{i})
         for j = 1:length(cols)        
             ModelTypes{k}.type = 'Laplace';
             ModelTypes{k}.Ivar = cols(j);
-            ModelTypes{k}.MinMembers = 4;
+            ModelTypes{k}.MinMembers = 5;
 
             %% Error checking
             if(VarsUsed(cols(j)))
@@ -268,7 +293,7 @@ switch lower(model_list{i})
         for j = 1:length(cols)
             ModelTypes{k}.type = 'Poisson';
             ModelTypes{k}.Ivar = cols(j);
-            ModelTypes{k}.MinMembers = 2; 
+            ModelTypes{k}.MinMembers = 5; 
 
             %% Error checking
             if(VarsUsed(cols(j)))
@@ -296,7 +321,7 @@ switch lower(model_list{i})
         for j = 1:length(cols)
             ModelTypes{k}.type = 'geometric';
             ModelTypes{k}.Ivar = cols(j);
-            ModelTypes{k}.MinMembers = 2; 
+            ModelTypes{k}.MinMembers = 5; 
 
             %% Error checking
             if(VarsUsed(cols(j)))
@@ -351,7 +376,7 @@ switch lower(model_list{i})
         for j = 1:length(cols)        
             ModelTypes{k}.type = 'weibull';
             ModelTypes{k}.Ivar = cols(j);       
-            ModelTypes{k}.MinMembers = 4;        
+            ModelTypes{k}.MinMembers = 5;        
 
             %% Error checking
             if(VarsUsed(cols(j)))

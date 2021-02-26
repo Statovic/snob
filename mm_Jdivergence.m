@@ -98,7 +98,7 @@ for i = wModels
                     s1 = theta1(d+1:2*d);
                     s2 = theta2(d+1:2*d);
                     a1 = theta1((2*d+1):end);
-                    a2 = theta2((2*d+1):end);   % check collapsed!
+                    a2 = theta2((2*d+1):end);   % TODO: collapsed factor
                     
                     % compute SFA covariance
                     Sigma1 = a1*a1' + diag(s1.^2);
