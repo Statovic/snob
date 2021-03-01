@@ -4,20 +4,35 @@ Flexible mixture models for automatic clustering
 SNOB is a Matlab implementation of finite mixture models. Snob uses the minimum message length criterion to estimate the structure of the mixture model (i.e., the number of sub-populations; which sample belongs to which sub-population) and estimate all mixture model parameters. SNOB allows the user to specify the desired number of sub-populations, however if this is not specified, SNOB will automatically try to discover this information. Currently, SNOB supports mixtures of the following distributions: 
 
 -Beta distribution
+
 -Exponential distribution
+
 -Univariate gamma distribution
+
 -Geometric distribution
+
 -Inverse Gaussian distribution
+
 -Univariate Laplace distribution
+
 -Gaussian linear regression
+
 -Logistic regression
+
 -Multinomial distribution
+
 -Multivariate Gaussian distribution 
+
 -Negative binomial distribution
+
 -Univariate normal distribution
+
 -Poisson distribution
+
 -Multivariate normal distribution (single factor analysis)
+
 -von Mises-Fisher distribution
+
 -Weibull distribution
 
 The program is easy to use and allows missing data - all missing data should be coded as NaN. Examples of how to use the program are provided; see data/mm_example?.m.
