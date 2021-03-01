@@ -87,7 +87,7 @@
 %                       'vmf'       -> von Mises-Fisher distribution
 %                       'weibull'   -> Weibull distribution
 %
-%                Except in the case of the 'linreg' model, the vector cols denotes which columns the
+%                Except in the case of the 'linreg' or 'logreg' models, the vector cols denotes which columns the
 %                model applies to. That is, 
 %                       {'norm', 1} -> the first column is data from a normal distribution
 %                       {'exp',1,'poisson',[2,3],mvg,[4,5,6]} -> 

@@ -16,7 +16,7 @@ function [lse,sm] = logsumexp(x)
 
 xmax = max(x,[],2);
 e = exp(x - xmax);
-s = sum(e, 2) - 1;           % this is not ideal ...
+s = sum(e, 2) - 1;           % not ideal ...
 lse = xmax + log1p(s);
 
 if nargout > 1

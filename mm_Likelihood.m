@@ -75,7 +75,7 @@ for k = 1:K
                 
                 subL(I) = gammaln(phi) + phi*log(mu/phi) - (phi-1)*log(Y(I, m.Ivar)) + phi/mu*Y(I, m.Ivar);
             
-            %% Univaraite k-nomial
+            %% Univariate k-nomial
             case 'multi'
                 
                 % Parameters

@@ -270,7 +270,7 @@ if(d == 3)
     logbesseli = log(sinh(k)) + 0.5*log(2) - 0.5*logk - 0.5*log(pi);
     logA = log(coth(k) - 1/k);
 else
-    logbesseli = log(besseli(d/2-1,k));
+    logbesseli = log(besseli(d/2-1,k));         % TODO numerical accuracy
     logA = log(besseli(d/2, k)) - logbesseli;
 end
 

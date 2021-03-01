@@ -148,9 +148,12 @@ for k = 1:K
                 d = nParams;
                 if(d == 3)
                     logA = log(coth(kappa) - 1/kappa);
+                elseif(d == 5)
+                    logA = log(kappa/(-1+kappa*coth(kappa)) -(3/kappa));
+                elseif(d == 7)
+                    logA = log(kappa^3/(9+3*kappa^2-9*kappa*coth(kappa)) - 5/kappa - kappa/3);
                 else
-                    logbesseli = log(besseli(d/2-1,kappa));
-                    logA = log(besseli(d/2, kappa)) - logbesseli;
+                    logA = log(besseli(d/2, kappa)) - log(besseli(d/2-1,kappa));
                 end                
                 
                 h_kappa = -(d-1)*log(kappa) + (d+1)/2*log(1+kappa*kappa) - log(2) - gammaln((d+1)/2) + log(sqrt(pi)) + gammaln(d/2);
@@ -158,7 +161,7 @@ for k = 1:K
                 h_theta = h_mu + h_kappa;
 
                 %% Fisher information
-                logAp = log(1 - exp(2*logA) - (d-1)/kappa*exp(logA));
+                logAp = log1p(- exp(2*logA) - (d-1)/kappa*exp(logA));
                 F_theta = (d-1)*(log(Nk(k)) + log(kappa) + logA) + log(Nk(k)) + logAp;
                 F_theta = F_theta * 0.5;                
                 
