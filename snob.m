@@ -117,6 +117,7 @@
 %   mm    - structure respresenting the complete mixture model
 %
 %
+%  Examples:
 %  For examples of SNOB usage, please see data/mm_example1.m, data/mm_example2.m, etc.
 %
 % References:
