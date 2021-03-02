@@ -30,7 +30,11 @@ while not(done)
         
         %% Attempt to re-assign items to classes
         if(mm.nClasses > 1)
-            [mm_r, msglen_r] = mm_Reassign(mm, data);        
+            [mm_r, msglen_r] = mm_Reassign(mm, data);   
+            % if fixedstructure AND class(es) were collapsed
+            if(mm.opts.fixedstructure && (mm_r.nClasses < mm.nClasses))
+                msglen_r = inf; % make sure we dont select this model
+            end
         else
             mm_r = {}; msglen_r = inf;
         end
