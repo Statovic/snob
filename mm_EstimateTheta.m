@@ -410,7 +410,8 @@ b = exp(logb);
 L = -(a-1)*S1 - (b-1)*S2 + Nk*betaln(a,b);
 
 pgterm = psi(1,a)*psi(1,b) - (psi(1,a)+psi(1,b))*psi(1,a+b);
-h = -2*log(2) + 2*log(pi) + log1p(a^2) + log1p(b^2);
+%h = -2*log(2) + 2*log(pi) + log1p(a^2) + log1p(b^2);
+h = -log(4) + log(a + b) + log(pi) + log(4 + (a + b)^2);
 J = log(Nk) + 0.5*log(pgterm);
 
 f = h + J + L;

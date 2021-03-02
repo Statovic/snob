@@ -131,7 +131,12 @@ for k = 1:K
                 bp = model.theta(2);  
                 
                 pgterm = psi(1,ap)*psi(1,bp) - (psi(1,ap)+psi(1,bp))*psi(1,ap+bp);
-                h_theta = -2*log(2) + 2*log(pi) + log1p(ap^2) + log1p(bp^2);
+                %h_theta = -2*log(2) + 2*log(pi) + log1p(ap^2) + log1p(bp^2);
+                % Let mu = a / (a+b), v = a + b
+                % The prior below is obtained by assuming
+                % mu ~ U(0,1), v ~ HC(2)
+                % and transforming to (a,b) space
+                h_theta = -log(4) + log(ap + bp) + log(pi) + log(4 + (ap + bp)^2);    
                 F_theta = log(Nk(k)) + 0.5*log(pgterm);             
                 
                 AssLen = h_theta + F_theta;                  

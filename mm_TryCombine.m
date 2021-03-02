@@ -7,8 +7,8 @@ if (K > 1)
         fprintf('             Attempting to combine...\n');
     end            
     
-    CombList = combnk(1:K, 2);
-    nc = size(CombList ,1);
+    CombList = combnk(1:K, 2);  % list of possible class combinations
+    nc = size(CombList ,1);     % number of class combinations
     
     %% If more combinations than allowed, randomly select a subset of them
     if (nc > mm.opts.MaxTryCombines)
@@ -17,7 +17,7 @@ if (K > 1)
         nc = mm.opts.MaxTryCombines;
     end
     
-    %% Try all combinations
+    %% Try combinations and keep track of codelength
     mm_c = cell(nc,1);
     msglen_c = zeros(nc,1);
     for i = 1:nc       
@@ -44,7 +44,5 @@ else
     mm_combine = {};
     best_msglen = inf;
 end
-
-
 
 end

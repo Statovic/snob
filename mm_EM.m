@@ -8,11 +8,11 @@ L = zeros(mm.opts.emmaxiter, 1);
 while not(done)
     
     %% Collapse mixtures if required ...
-    if(min(mm.Nk) < mm.MinMembers)
+    if(min(mm.Nk) < mm.MinMembers)             
+        mm = mm_Collapse(mm, mm.Nk < mm.MinMembers);
         if(mm.opts.display)
             fprintf('             Removing %d class(es) due to insufficient membership...\n', sum(mm.Nk < mm.MinMembers));
-        end                 
-        mm = mm_Collapse(mm, mm.Nk < mm.MinMembers);
+        end           
     end
     
     %% Estimate class proportions

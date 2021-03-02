@@ -11,11 +11,6 @@ mm.class{K} = mm_CreateClass(mm.ModelTypes);
 mm.nClasses = K;
 
 % run kmeans 
-% warning('off', 'stats:kmeans:FailedToConverge');    % supress kmeans++ warnings
-% warning('off', 'stats:kmeans:MissingDataRemoved');
-% [~,~,~,Dist] = kmeans(data, K);
-% warning('on', 'stats:kmeans:FailedToConverge');   
-% warning('on', 'stats:kmeans:MissingDataRemoved');
 [~, Dist] = kmeansinit(data, K);
 
 R  = bsxfun(@rdivide, Dist, sum(Dist,2));
@@ -30,20 +25,6 @@ end
 mm.r  = R;
 mm.Nk = sum(mm.r,1)';
 mm.a = (mm.Nk+1/2) ./ (mm.N+K/2); %mm.a  = mm.Nk / sum(mm.Nk);
-
-% mm.a = zeros(K,1);
-% mm.r = ones(size(data,1),K) * 0.05;
-% for k = 1:K
-%     ix = (IDX == k);
-% 
-%     % proportions
-%     mm.a(k) = mean(ix);
-%     mm.r(ix,k) = 0.95;
-% end
-% 
-% 
-% mm.r  = bsxfun(@rdivide, mm.r, sum(mm.r,2));
-% mm.Nk = sum(mm.r,1)';     
 
 %% Re-estimate the model parameters for the two classes using the new memberships
 if(min(mm.Nk) >= mm.MinMembers)

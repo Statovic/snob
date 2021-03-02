@@ -23,19 +23,19 @@ switch opts.Initialisation
     %% Random assignment of data
     case 'random'
         
-    % Mixing proportions
-    mm.a = rand(K,1); 
-    mm.a = mm.a ./ sum(mm.a);
+        % Mixing proportions
+        mm.a = rand(K,1); 
+        mm.a = mm.a ./ sum(mm.a);
 
-    % Create parameters for each model type and class
-    for k = 1:K
-        mm.class{k} = mm_CreateClass(ModelTypes);
-    end
-    
-    % Randomly assign data equally to all K classes
-    mm.r  = rand(size(data,1), K);
-    mm.r  = bsxfun(@rdivide, mm.r, sum(mm.r,2));
-    mm.Nk = sum(mm.r,1)';
+        % Create parameters for each model type and class
+        for k = 1:K
+            mm.class{k} = mm_CreateClass(ModelTypes);
+        end
+
+        % Randomly assign data equally to all K classes
+        mm.r  = rand(size(data,1), K);
+        mm.r  = bsxfun(@rdivide, mm.r, sum(mm.r,2));
+        mm.Nk = sum(mm.r,1)';
     
     %% Assignment based on the k-means++ algorithm
     case 'kmeans++'
@@ -61,8 +61,7 @@ switch opts.Initialisation
         
         for k = 1:K
             mm.class{k} = mm_CreateClass(ModelTypes);
-        end        
-    
+        end            
 end
 
 %% negative log-likeliood and message length of mixture model
