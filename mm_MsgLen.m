@@ -206,6 +206,17 @@ for k = 1:K
                 F_theta = log(Nk(k))/2 - log(lambda);
                 AssLen = h_theta + F_theta;
                 
+            %% Univariate exponential with type I random censoring
+            case 'cexp'
+                nParams = 2;
+                totalParams = totalParams + nParams;
+                
+                alpha = model.theta(1); 
+                beta = model.theta(2); 
+                h_theta = -log(alpha) - log(beta) + log(alpha+beta) + 2*log(alpha*(beta+1)+beta);
+                F_theta = log(n) - 0.5*(log(beta) + log(alpha)) - log(alpha+beta);                
+                AssLen = h_theta + F_theta;                
+                
             %% Univariate gamma
             case 'gamma'
                 nParams = 2;

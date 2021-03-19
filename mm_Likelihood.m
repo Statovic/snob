@@ -56,10 +56,17 @@ for k = 1:K
                 subL(I) = -gammaln(Y(I, m.Ivar)+phi) + gammaln(phi) + gammaln(Y(I, m.Ivar)+1) - Y(I, m.Ivar).*log(mu/(mu+phi)) - phi*log(phi/(mu+phi));
                 
             %% exponential
-            case 'exp'
-                
+            case 'exp'                
                 lambda = m.theta;
                 subL(I) = log(lambda) +  Y(I, m.Ivar) ./ lambda;
+                
+            %% exponential with type I random censoring
+            case 'cexp'
+                alpha = m.theta(1);
+                beta = m.theta(2);
+                y = Y(I, m.Ivar(1));
+                D = Y(I, m.Ivar(2));                
+                subL(I) = D*log(beta) + (1-D)*log(alpha) + (1/alpha+1/beta)*y;
                 
             %% Laplace
             case 'Laplace'

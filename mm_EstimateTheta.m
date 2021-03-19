@@ -58,6 +58,24 @@ for k = wClasses
             
             model.theta = lambda;
             
+            %% Univariate exponential with random type I censoring
+            case 'cexp'
+               
+            ix  = ~any(isnan(y),2);                   
+            
+            % Sufficient statistics
+            S = sum(r(ix) .* y(ix,1));           % sum y_i
+            D = sum(r(ix) .* y(ix,2));           % sum delta_i
+            
+            Nk = sum(r(ix));
+            
+            % Estimates
+            A = sqrt(2*(Nk+3)*S+(Nk-1)^2+S^2) - Nk + S + 1;
+            alpha = A / (2*(Nk - D + 0.5));
+            beta = A  / (2*(D + 0.5));
+            model.theta = [ alpha; beta ];
+            
+            
             %% Negative binomial distribution
             case 'negb'
             

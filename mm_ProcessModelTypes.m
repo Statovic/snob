@@ -42,6 +42,35 @@ switch lower(model_list{i})
             k = k + 1;
         end      
     
+    %% Univaraite exponential distribution with Type I censoring    
+    case {'cexp'}
+        ModelTypes{k}.type = 'cexp';
+        ModelTypes{k}.Ivar = cols;
+        ModelTypes{k}.MinMembers = 5;            
+        
+        if(length(cols) ~= 2)
+            error('Censored data must be specified in the form [y,delta], y \in R^+, delta \in {0,1}');
+        end
+        
+        %% Error checking
+        if(VarsUsed(cols(1)) || VarsUsed(cols(2)))
+                error(['Data column ', int2str(cols(1)), int2str(cols(2)), ': multiple models defined']);
+        end   
+        
+        ix = ~any(isnan(data(:,cols)),2);
+        y = data(ix,ModelTypes{k}.Ivar);
+        if(min(y(:,1)) < 0)
+            error(['Data column ', int2str(cols(1)), int2str(cols(2)), ': data cannot be negative']);
+        end 
+        if(std(y(:,1)) == 0)
+            error(['Data column ', int2str(cols(1)), int2str(cols(2)),': zero variance']);
+        end  
+        if( any(unique(y(:,2)) ~= [0 1]') )
+            error('Censored data must be specified in the form [y,delta], y \in R^+, delta \in {0,1}');
+        end
+            
+        k = k + 2;        
+        
     %% Univariate exponential distribution
     case {'exp','exponential'}
                         

@@ -26,6 +26,12 @@
 %   (.)    Exponential distribution ('exp')
 %               p(X|lambda)      = (1/lambda) * exp(-x/lambda),
 %                                   X > 0, lambda > 0
+%   (.)    Exponential distribution with random Type I censoring ('cexp')
+%               Data = [Y, delta], where
+%               Y ~ min(T,C); delta = I(T <= C)
+%               p(T|beta)        = (1/beta) * exp(-t/beta),
+%               p(C|alpha)       = (1/alpha) * exp(-c/alpha),
+%                                   T > 0, C > 0, alpha,beta > 0
 %   (.)    von Mises-Fisher distribution ('vmf')
 %               p(X|kappa,mu)    = kappa^((d/2)-1)/(2*pi)^(d/2)/I_{d/2-1}(kappa) exp(kappa * mu' x)
 %                                   ||X|| = ||mu|| = 1, kappa > 0, X,mu \in R^d
@@ -72,6 +78,7 @@
 %                 'model' is one of:
 %                       'beta'      -> Beta distribution
 %                       'exp'       -> Exponential distribution
+%                       'cexp'      -> Exponential distribution with censoring
 %                       'gamma'     -> Univariate gamma distribution
 %                       'geometric' -> Geometric distribution
 %                       'igauss'    -> Inverse Gaussian distribution
@@ -87,13 +94,20 @@
 %                       'vmf'       -> von Mises-Fisher distribution
 %                       'weibull'   -> Weibull distribution
 %
-%                Except in the case of the 'linreg' or 'logreg' models, the vector cols denotes which columns the
+%                Except in the case of censored data, 'linreg' or 'logreg' models, the vector cols denotes which columns the
 %                model applies to. That is, 
 %                       {'norm', 1} -> the first column is data from a normal distribution
 %                       {'exp',1,'poisson',[2,3],mvg,[4,5,6]} -> 
 %                       column 1 is data from the exponential distribution;
 %                       columns 2,3 are data from two Poisson distributions
 %                       columns 4,5,6 are data from a single multivariate Gaussian distribution
+%
+%                For distributions with censored data
+%                       {'cexp', [1,2], 'cexp', [3,4]} -> 
+%                       column 1 is the data Y, 
+%                       column 2 are the indicator variables with delta = 1
+%                       (observed; T<=C) and delta = 1 (censored; T>=C)
+%                       ... and similarly for columns 3 and 4.
 %
 %                In the case of the linear or logistic regression models, cols = [target, covariate(s)]. That is, 
 %                       {'mvg',1:3,'linreg',[4,1,2,3]} -> the dependent variable is in column 4, 
@@ -149,7 +163,7 @@
 function mm = snob(data, model_list, varargin)
 
 %% Version number
-VERSION = '0.40';
+VERSION = '0.50';
 
 %% Parse options
 inParser = inputParser;  
@@ -236,7 +250,7 @@ if (~isempty(models))
     
     % If insufficient models were added to cover all data columns, return an error
     if ~all(VarsUsed)
-        error('Insufficient models specified -- some data columns are not modelled');
+        error('Too few models specified -- some data columns are not modelled');
     end
 end
 opts.nModels = length(ModelTypes);

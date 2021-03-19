@@ -62,6 +62,9 @@ for k = 1:nClasses
                 fprintf('%20s', 'Weibull');
                 fprintf('%10s = %7.2f%10s = %7.2f', 'lambda',theta(1),'k',theta(2));
             
+            %% Exponential with censoring
+            case 'cexp'
+                fprintf('%10s = %7.2f%10s = %7.2f', 'alpha',theta(1),'beta',theta(2));
             %% Exponential
             case 'exp'
                 fprintf('%20s', 'Exponential');
