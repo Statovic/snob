@@ -207,15 +207,26 @@ for k = 1:K
                 AssLen = h_theta + F_theta;
                 
             %% Univariate exponential with type I random censoring
-            case 'cexp'
+            case 'crndexp'
                 nParams = 2;
                 totalParams = totalParams + nParams;
                 
                 alpha = model.theta(1); 
                 beta = model.theta(2); 
                 h_theta = -log(alpha) - log(beta) + log(alpha+beta) + 2*log(alpha*(beta+1)+beta);
-                F_theta = log(n) - 0.5*(log(beta) + log(alpha)) - log(alpha+beta);                
-                AssLen = h_theta + F_theta;                
+                F_theta = log(Nk(k)) - 0.5*(log(beta) + log(alpha)) - log(alpha+beta);                
+                AssLen = h_theta + F_theta;         
+                
+            %% Univariate exponential with fixed type I censoring                
+            case 'cfixexp'
+                nParams = 1;
+                totalParams = totalParams + nParams;  
+                
+                c = mm.ModelTypes{i}.c;                
+                theta = model.theta(1); 
+                h_theta = -log(2) + log(pi) + log1p(theta*theta);
+                F_theta = 0.5*log(Nk(k)) - log(theta) + 0.5*log(1-exp(-c/theta));    
+                AssLen = h_theta + F_theta;                  
                 
             %% Univariate gamma
             case 'gamma'

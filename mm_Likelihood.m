@@ -61,12 +61,19 @@ for k = 1:K
                 subL(I) = log(lambda) +  Y(I, m.Ivar) ./ lambda;
                 
             %% exponential with type I random censoring
-            case 'cexp'
+            case 'crndexp'
                 alpha = m.theta(1);
                 beta = m.theta(2);
                 y = Y(I, m.Ivar(1));
                 D = Y(I, m.Ivar(2));                
                 subL(I) = D*log(beta) + (1-D)*log(alpha) + (1/alpha+1/beta)*y;
+                
+            %% exponential with type I fixed censoring
+            case 'cfixexp'
+                theta = m.theta(1);
+                y = Y(I, m.Ivar(1));
+                D = Y(I, m.Ivar(2));                
+                subL(I) = D.*log(theta) + y./theta;
                 
             %% Laplace
             case 'Laplace'

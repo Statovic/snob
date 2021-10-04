@@ -59,7 +59,7 @@ for k = wClasses
             model.theta = lambda;
             
             %% Univariate exponential with random type I censoring
-            case 'cexp'
+            case 'crndexp'
                
             ix  = ~any(isnan(y),2);                   
             
@@ -75,6 +75,17 @@ for k = wClasses
             beta = A  / (2*(D + 0.5));
             model.theta = [ alpha; beta ];
             
+            %% Univariate exponential with fixed type I censoring
+            case 'cfixexp'   
+                
+            ix  = ~any(isnan(y),2);                                        
+            
+            c = mm.ModelTypes{i}.c;
+            S = sum(r(ix) .* y(ix,1));
+            K = sum(r(ix) .* y(ix,2));
+            
+            theta = fminunc(@(X) cfixexp_msglen(S, K, c, X(1)), 0, mm.opts.SearchOptions);
+            model.theta = exp(theta(:));                           
             
             %% Negative binomial distribution
             case 'negb'
@@ -400,6 +411,18 @@ if(~all_zeros)
     v = (y * beta) * (1 - K/(N-1)/b2) / (1 + b2);
 end
 
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function f = cfixexp_msglen(S, K, c, log_theta)
+
+theta = exp(log_theta);
+L = K*log_theta + S/theta;
+%L = r'*(delta.*log_theta + y/theta);
+F = - log_theta + 0.5*log(1-exp(-c/theta));
+h = log1p(theta*theta);
+
+f = L + F + h;
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

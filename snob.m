@@ -26,7 +26,7 @@
 %   (.)    Exponential distribution ('exp')
 %               p(X|lambda)      = (1/lambda) * exp(-x/lambda),
 %                                   X > 0, lambda > 0
-%   (.)    Exponential distribution with random Type I censoring ('cexp')
+%   (.)    Exponential distribution with random Type I censoring ('crndexp')
 %               Data = [Y, delta], where
 %               Y ~ min(T,C); delta = I(T <= C)
 %               p(T|beta)        = (1/beta) * exp(-t/beta),
@@ -78,7 +78,8 @@
 %                 'model' is one of:
 %                       'beta'      -> Beta distribution
 %                       'exp'       -> Exponential distribution
-%                       'cexp'      -> Exponential distribution with censoring
+%                       'crndexp'   -> Exponential distribution with random type I censoring
+%                       'cfixexp'   -> Exponential distribution with fixed type I censoring
 %                       'gamma'     -> Univariate gamma distribution
 %                       'geometric' -> Geometric distribution
 %                       'igauss'    -> Inverse Gaussian distribution
@@ -106,7 +107,7 @@
 %                       {'cexp', [1,2], 'cexp', [3,4]} -> 
 %                       column 1 is the data Y, 
 %                       column 2 are the indicator variables with delta = 1
-%                       (observed; T<=C) and delta = 1 (censored; T>=C)
+%                       (observed; T<=C) and delta = 0 (censored; T>=C)
 %                       ... and similarly for columns 3 and 4.
 %
 %                In the case of the linear or logistic regression models, cols = [target, covariate(s)]. That is, 

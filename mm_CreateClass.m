@@ -62,10 +62,15 @@ for i = 1:length(ModelTypes)
             class.model{i}.Ivar  = ModelTypes{i}.Ivar;   % which variable in the data?
             class.model{i}.theta = rand(1);              % [mean]            
             
-        case 'cexp'
-            class.model{i}.type  = 'cexp';               % type
+        case 'crndexp'
+            class.model{i}.type  = 'crndexp';            % type
             class.model{i}.Ivar  = ModelTypes{i}.Ivar;   % which variable in the data?
             class.model{i}.theta = rand(2,1);            % [alpha,beta]               
+            
+        case 'cfixexp'
+            class.model{i}.type  = 'cfixexp';            % type
+            class.model{i}.Ivar  = ModelTypes{i}.Ivar;   % which variable in the data?
+            class.model{i}.theta = rand(1);                
         
         %% Create a k-nomial model
         case 'multi'

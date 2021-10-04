@@ -62,12 +62,19 @@ for k = 1:nClasses
                 fprintf('%20s', 'Weibull');
                 fprintf('%10s = %7.2f%10s = %7.2f', 'lambda',theta(1),'k',theta(2));
             
-            %% Exponential with censoring
-            case 'cexp'
+            %% Exponential with random type I censoring
+            case 'crndexp'
+                fprintf('%20s', 'Exp Rand');
                 fprintf('%10s = %7.2f%10s = %7.2f', 'alpha',theta(1),'beta',theta(2));
+                
+            %% Exponential with fixed type I censoring
+            case 'cfixexp'
+                fprintf('%20s', 'Exp Type I');
+                fprintf('%10s = %7.2f%10s = %7.2f', 'theta',theta(1),'Cens.',mm.ModelTypes{i}.c);
+                
             %% Exponential
             case 'exp'
-                fprintf('%20s', 'Exponential');
+                fprintf('%20s', 'Exp');
                 fprintf('%10s = %7.2f', 'lambda',theta(1));
             
             %% Multinomial
