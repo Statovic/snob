@@ -23,15 +23,25 @@
 %   (.)    Weibull distribution ('weibull')
 %               p(X|lambda, k)   = (k/lambda) * (x/lambda)^(k-1) * exp(-(x/lambda)^k),
 %                                   X > 0, lambda > 0, k > 0
+%   (.)    Weibull distribution with fixed type I censoring ('cfixweibull')
+%               Data = [Y, delta], where
+%               Y ~ min(T,C); delta = I(T <= C)
+%               p(T|lambda, k)   = (k/lambda) * (t/lambda)^(k-1) * exp(-(t/lambda)^k),
+%                                   T > 0, lambda > 0, k > 0
 %   (.)    Exponential distribution ('exp')
 %               p(X|lambda)      = (1/lambda) * exp(-x/lambda),
 %                                   X > 0, lambda > 0
-%   (.)    Exponential distribution with random Type I censoring ('crndexp')
+%   (.)    Exponential distribution with random type I censoring ('crndexp')
 %               Data = [Y, delta], where
 %               Y ~ min(T,C); delta = I(T <= C)
 %               p(T|beta)        = (1/beta) * exp(-t/beta),
 %               p(C|alpha)       = (1/alpha) * exp(-c/alpha),
 %                                   T > 0, C > 0, alpha,beta > 0
+%   (.)    Exponential distribution with fixed type I censoring ('cfixexp')
+%               Data = [Y, delta], where
+%               Y ~ min(T,C); delta = I(T <= C)
+%               p(T|theta)        = (1/theta) * exp(-t/theta),
+%                                   T > 0, C > 0, theta > 0
 %   (.)    von Mises-Fisher distribution ('vmf')
 %               p(X|kappa,mu)    = kappa^((d/2)-1)/(2*pi)^(d/2)/I_{d/2-1}(kappa) exp(kappa * mu' x)
 %                                   ||X|| = ||mu|| = 1, kappa > 0, X,mu \in R^d
@@ -104,7 +114,7 @@
 %                       columns 4,5,6 are data from a single multivariate Gaussian distribution
 %
 %                For distributions with censored data
-%                       {'cexp', [1,2], 'cexp', [3,4]} -> 
+%                       {'cfixexp', [1,2], 'cfixexp', [3,4]} -> 
 %                       column 1 is the data Y, 
 %                       column 2 are the indicator variables with delta = 1
 %                       (observed; T<=C) and delta = 0 (censored; T>=C)
@@ -127,6 +137,8 @@
 %       'maxiter',integer       - maximum number of search iterations [default=100]
 %       'maxtrycombine',integer - maximum number of classes to attempt to
 %                                 split/combine during each search iteration [default=10]
+%       'varnames', cell array  - cell array of strings, one for each variable
+%                                 [default={'','',...}]
 %       
 %  Returns:
 %   mm    - structure respresenting the complete mixture model
@@ -181,6 +193,7 @@ defaultMaxTryCombine  = 10;
 defaultStartModel     = [];
 defaultNoCost         = []; % TODO: add option to avoid costing specified columns
 defaultMaxK           = inf;
+defaultVarNames = {};
 
 expectedInit = {'random', 'kmeans++'};
 
@@ -199,6 +212,7 @@ addParameter(inParser, 'maxtrycombine',  defaultMaxTryCombine, @(x) isnumeric(x)
 addParameter(inParser, 'startmodel', defaultStartModel, @isstruct);
 addParameter(inParser, 'nocost', defaultNoCost, @(x) isnumeric(x));
 addParameter(inParser, 'maxk', defaultMaxK, @(x) isnumeric(x) && isscalar(x) && (x > 0));
+addParameter(inParser, 'varnames', defaultVarNames, @iscell);
 
 % Parse the input now
 parse(inParser, model_list, varargin{:});  
@@ -220,6 +234,7 @@ opts.greedy         = inParser.Results.greedy;      % if true, always pick the m
 opts.MaxTryCombines = inParser.Results.maxtrycombine;
 opts.SearchOptions  = optimoptions('fminunc','display','off');
 opts.NoCost         = inParser.Results.nocost;
+opts.VarNames       = upper(inParser.Results.varnames);
 
 %% Check Options
 if(any(mod(opts.nClasses,1)))
@@ -255,6 +270,33 @@ if (~isempty(models))
     end
 end
 opts.nModels = length(ModelTypes);
+
+%% Check list of attribute names
+if(~isempty(opts.VarNames))    
+    if(length(opts.VarNames) ~= p)
+        error('List of attribute names is incorrect size');
+    end
+
+    for i = 1:p
+        if(~ischar(opts.VarNames{i}))
+            error('All attribute names must be of type string');
+        end
+    end
+    
+    % Shorten strings to max 9 char length
+    for i = 1:p
+        chrLen = length(opts.VarNames{i});
+        if(chrLen > 8)
+            opts.VarNames{i} = [opts.VarNames{i}(1:8),'.'];
+        end
+    end
+    
+else % Create an empty list as no names were given
+    for i = 1:p
+        opts.VarNames{i} =  ['Attr.', num2str(i)];
+    end
+end
+
 
 %% Create an initial model
 if(isempty(mm))

@@ -43,6 +43,16 @@ for k = wClasses
             theta = fminunc(@(X) weibull_msglen(y(ix), r(ix), X(1), X(2)), [log(mean(y(ix))), 0], mm.opts.SearchOptions);
             model.theta = max(1e-2, exp(theta(:)));
             
+            %% Univariate Weibull distribution with fixed type I censoring
+            case 'cfixweibull'
+            c = mm.ModelTypes{i}.c;
+            ix  = ~any(isnan(y),2);          
+            
+            k0 = 1;
+            x0 = log( [ sum((1/(0.5 + sum(y(ix,2))))*y(ix,1).^k0).^(1/k0), k0] );            
+            theta = fminunc(@(X) cfixweibull_msglen(y(ix,1), y(ix,2), c, r(ix), X(1), X(2)), x0, mm.opts.SearchOptions);
+            model.theta = max(1e-2, exp(theta(:)));                
+                            
             %% Univariate exponential
             case 'exp'
                 
@@ -58,7 +68,7 @@ for k = wClasses
             
             model.theta = lambda;
             
-            %% Univariate exponential with random type I censoring
+            %% Exponential with random type I censoring
             case 'crndexp'
                
             ix  = ~any(isnan(y),2);                   
@@ -75,7 +85,7 @@ for k = wClasses
             beta = A  / (2*(D + 0.5));
             model.theta = [ alpha; beta ];
             
-            %% Univariate exponential with fixed type I censoring
+            %% Exponential with fixed type I censoring
             case 'cfixexp'   
                 
             ix  = ~any(isnan(y),2);                                        
@@ -84,7 +94,8 @@ for k = wClasses
             S = sum(r(ix) .* y(ix,1));
             K = sum(r(ix) .* y(ix,2));
             
-            theta = fminunc(@(X) cfixexp_msglen(S, K, c, X(1)), 0, mm.opts.SearchOptions);
+            x0 = log(S / (K + 0.5));
+            theta = fminunc(@(X) cfixexp_msglen(S, K, c, X(1)), x0, mm.opts.SearchOptions);
             model.theta = exp(theta(:));                           
             
             %% Negative binomial distribution
@@ -208,9 +219,9 @@ for k = wClasses
                 
             s  = sum(r(ix) .* y(ix));           % sum y_i
             Nk  = sum(r(ix));                   % n            
-            r = roots( [Nk+s, 1-4*Nk-3*s, 1+6*Nk+3*s, -4-5*Nk-2*s, 2+2*Nk] );
+            geoR = roots( [Nk+s, 1-4*Nk-3*s, 1+6*Nk+3*s, -4-5*Nk-2*s, 2+2*Nk] );
             
-            model.theta = r(imag(r) == 0 & r > 0 & r < 1);
+            model.theta = geoR(imag(geoR) == 0 & geoR > 0 & geoR < 1);
             
             %% Inverse Gaussian
             case 'invGaussian'
@@ -345,6 +356,45 @@ L = -((k-1).*logz + log(k./lambda)) + z2B;
 %L(isinf(L)) = realmax;
 
 f = F + h + r'*L;
+
+end
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function msglen = cfixweibull_msglen(y, delta, c, r, log_lambda, log_k)
+
+k = exp(min(max(log_k, -7), +7)); log_k = log(k);
+lambda = exp(min(max(log_lambda, -7), +7)); log_lambda = log(lambda);
+
+P = 2;
+n = sum(r);
+
+% assertion
+kappa = 5/36/sqrt(3);
+%h = -log(2) + log(pi) + log1p(lambda^2) + log(c) + 2*log(k/c) + c/k;
+h = -log(2) + log(pi) + log1p(k^2) - log(2) + log(pi) + log1p(lambda^2);
+
+%F = log(n) + log(det(wblconst_fisher(k, lambda, c)))/2;
+p = 1 - exp(-(c./lambda).^k);
+%logDetF = ((-0.107758E2)+(-0.878331E2).*p+0.194713E3.*p.^2+(-0.898213E2).* ...
+%  p.^3).*(1+0.280711E2.*p+0.779886E1.*p.^2+(-0.240356E2).*p.^3).^(-1);
+logDetF = ((-0.144455E2)+(-0.194493E4).*p+(-0.188307E5).*p.^2+0.387201E5.* ...
+    p.^3+0.347085E5.*p.^4+(-0.115445E6).*p.^5+0.788731E5.*p.^6+( ...
+    -0.16047E5).*p.^7).*(1+0.237745E3.*p+0.48356E4.*p.^2+0.727136E4.* ...
+    p.^3+(-0.275255E5).*p.^4+0.11268E5.*p.^5+0.784586E4.*p.^6+( ...
+    -0.389537E4).*p.^7).^(-1);
+F = log(n) + 0.5*logDetF - log_lambda;
+assertion = h + F + P/2*log(kappa);
+
+% detail
+z = y./lambda;
+logz = log(z);
+z2B = exp(k.*logz);
+L = delta.*(-((k-1).*logz + log(k./lambda)) + z2B) + (1-delta).*(c/lambda)^k;    
+L = r'*L;
+detail = L + P/2;
+
+msglen = assertion + detail;
 
 end
 

@@ -47,6 +47,11 @@ for i = 1:length(ModelTypes)
             class.model{i}.Ivar  = ModelTypes{i}.Ivar;   % which variable in the data?
             class.model{i}.theta = rand(2,1);            % [lambda,k]            
 
+        case 'cfixweibull'
+            class.model{i}.type  = 'cfixweibull';        % type
+            class.model{i}.Ivar  = ModelTypes{i}.Ivar;   % which variable in the data?
+            class.model{i}.theta = rand(2,1);            % [lambda,k]                        
+            
         case 'Laplace'
             class.model{i}.type  = 'Laplace';            % type
             class.model{i}.Ivar  = ModelTypes{i}.Ivar;   % which variable in the data?

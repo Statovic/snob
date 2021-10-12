@@ -13,7 +13,7 @@ load data/acidity;
 %     (1) the data is modelled using a univariate Gaussian distribution: {'norm',1}
 %     (2) Snob will automatically attempt to discover the optimal number of
 %     mixtures (subpopulations)
-mm = snob(acidity, {'norm',1}, 'k',5);
+mm = snob(acidity, {'norm',1}, 'k', 5, 'varnames', {'Acidity'});
 
 % Print a summary of all the components (parameters and structure) of the
 % mixture model we have discovered. Snob discovered two classes; one of the
@@ -27,7 +27,7 @@ mm_Summary(mm);
 mm_PlotModel1d(mm, acidity, 1);
 
 % We now force Snob to use 3 classes and turn off subpopulation discovery. 
-mm2 = snob(acidity, {'norm',1}, 'k',3,'fixedstructure',true);
+mm2 = snob(acidity, {'norm',1}, 'k', 3, 'fixedstructure', true, 'varnames', {'Acidity'});
 
 % Print a summary of the new model. 
 % The total message length of the 3-class model is ~217 nits; ~5.4 nits longer than

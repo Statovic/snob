@@ -17,20 +17,20 @@ Sigma1 = a1*a1' + diag(sigma1.^2);
 x1     = mvnrnd(mu1, Sigma1, 1e2);
 
 a2     = randn(5,1);
-a1     = 2*(a2 / norm(a2));
+a2     = 2*(a2 / norm(a2));
 sigma2 = ones(5,1);
 Sigma2 = a2*a2' + diag(sigma2.^2);
 mu2    = -3*ones(5,1);
 x2     = mvnrnd(mu2, Sigma2, 3e2);
 
-x = [x1; x2];
+data = [x1; x2];
 
 % Fit a multivariate Gaussian distribution to the data
-mm_mvg = snob(x, {'mvg',1:5},'k',1,'display',false);
+mm_mvg = snob(data, {'mvg',1:5},'k',1,'display',false);
 mm_Summary(mm_mvg);
 
 % Fit a single factor analysis model to the data
-mm_sfa = snob(x, {'sfa',1:5},'k',1,'display',false);
+mm_sfa = snob(data, {'sfa',1:5},'k',1,'display',false);
 mm_Summary(mm_sfa);
 
 % The SFA model is strongly preferred according to the message length. 
@@ -45,14 +45,14 @@ Sigma2 = randcorr(5);
 x1     = mvnrnd(mu1, Sigma1, 1e2);
 x2     = mvnrnd(mu2, Sigma2, 3e2);
 
-x = [x1; x2];
+data = [x1; x2];
 
 % Fit a multivariate Gaussian distribution to the data
-mm_mvg = snob(x, {'mvg',1:5},'k',1,'display',false);
+mm_mvg = snob(data, {'mvg',1:5},'k',1,'display',false);
 mm_Summary(mm_mvg);
 
 % Fit a single factor analysis model to the data
-mm_sfa = snob(x, {'sfa',1:5},'k',1,'display',false);
+mm_sfa = snob(data, {'sfa',1:5},'k',1,'display',false);
 mm_Summary(mm_sfa);
 
 % The MVG model is strongly preferred according to the message length. 

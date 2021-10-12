@@ -183,6 +183,25 @@ for k = 1:K
                 F_theta = log(pi) - log(6)/2 - log(lambda) + log(Nk(k));
                 AssLen = h_theta + F_theta;   
                 
+            %% Weibull distribution with type I fixed censoring
+            case 'cfixweibull'                
+                nParams = 2;
+                totalParams = totalParams + nParams;
+                                
+                lambda = model.theta(1);
+                k_wbl = model.theta(2);
+                c = mm.ModelTypes{i}.c;    
+                
+                h_theta = -log(2) + log(pi) + log1p(lambda^2) -log(2) + log(pi) + log1p(k_wbl^2);
+                p = 1 - exp(-(c/lambda)^k_wbl);
+                logDetF = ((-0.144455E2)+(-0.194493E4).*p+(-0.188307E5).*p.^2+0.387201E5.* ...
+                    p.^3+0.347085E5.*p.^4+(-0.115445E6).*p.^5+0.788731E5.*p.^6+( ...
+                    -0.16047E5).*p.^7).*(1+0.237745E3.*p+0.48356E4.*p.^2+0.727136E4.* ...
+                    p.^3+(-0.275255E5).*p.^4+0.11268E5.*p.^5+0.784586E4.*p.^6+( ...
+                    -0.389537E4).*p.^7).^(-1);
+                F_theta = log(Nk(k)) + 0.5*logDetF - log(lambda);
+                AssLen = h_theta + F_theta;                   
+                
             %% Laplace distribution
             case 'Laplace'
                 nParams = 2;

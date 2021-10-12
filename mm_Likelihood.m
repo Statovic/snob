@@ -44,9 +44,27 @@ for k = 1:K
             %% Weibull
             case 'weibull'
                 lambda = m.theta(1);
-                k_wbl = m.theta(2);
+                k_wbl = m.theta(2);                
+                y = Y(I, m.Ivar(1)); 
                 
-                subL(I) = -log(k_wbl/lambda) + (k_wbl-1)*log(lambda) - (k_wbl-1)*log(Y(I, m.Ivar)) + (Y(I, m.Ivar)./lambda).^k_wbl;
+                z = y./lambda;
+                logz = log(z);
+                z2B = exp(k_wbl.*logz);
+                subL(I) = -((k_wbl-1).*logz + log(k_wbl./lambda)) + z2B;
+                
+            %% Weibull with fixed type I censoring
+            case 'cfixweibull'
+                lambda = m.theta(1);
+                k_wbl = m.theta(2);
+                c = mm.ModelTypes{i}.c;
+                
+                y = Y(I, m.Ivar(1));
+                delta = Y(I, m.Ivar(2));    
+                
+                z = y./lambda;
+                logz = log(z);
+                z2B = exp(k_wbl.*logz);
+                subL(I) = delta.*(-((k_wbl-1).*logz + log(k_wbl./lambda)) + z2B) + (1-delta).*(c/lambda)^k_wbl;                
             
             %% Negative binomial
             case 'negb'

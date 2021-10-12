@@ -108,9 +108,48 @@ switch lower(model_list{i})
         end
         ModelTypes{k}.c = censPoint;
             
-        k = k + 2;             
+        k = k + 2;          
+
+    %% Univariate Weibull distribution with fixed Type I censoring    
+    case {'cfixweibull'}
+        ModelTypes{k}.type = 'cfixweibull';
+        ModelTypes{k}.Ivar = cols;
+        ModelTypes{k}.MinMembers = 5;            
         
-    %% Univariate exponential distribution
+        if(length(cols) ~= 2)
+            error('Censored data must be specified in the form [y,delta], y \in R^+, delta \in {0,1}');
+        end
+        
+        %% Error checking
+        if(VarsUsed(cols(1)) || VarsUsed(cols(2)))
+                error(['Data column ', int2str(cols(1)), int2str(cols(2)), ': multiple models defined']);
+        end   
+        
+        ix = ~any(isnan(data(:,cols)),2);
+        y = data(ix,ModelTypes{k}.Ivar);
+        if(min(y(:,1)) < 0)
+            error(['Data column ', int2str(cols(1)), int2str(cols(2)), ': data cannot be negative']);
+        end 
+        if(std(y(:,1)) == 0)
+            error(['Data column ', int2str(cols(1)), int2str(cols(2)),': zero variance']);
+        end  
+        if( any(unique(y(:,2)) ~= [0 1]') )
+            error('Censored data must be specified in the form [y,delta], y \in R^+, delta \in {0,1}');
+        end
+        iz = (y(:,2) == 0); % index into censored data
+        if(length(unique(y(iz,1))) > 1)
+            error('Censoring point c must be the same for each data point y, y \in R^+, delta \in {0,1}');
+        end
+        
+        censPoint = realmax;
+        if(any(iz))
+            censPoint = max(y(iz,1));
+        end
+        ModelTypes{k}.c = censPoint;
+            
+        k = k + 2;           
+        
+    %% Univariate W distribution
     case {'exp','exponential'}
                         
         %% Basic data  
@@ -261,7 +300,8 @@ switch lower(model_list{i})
         
         d = length(CovIx);
         ModelTypes{k}.nDim = d;
-        ModelTypes{k}.MinMembers = 5;
+        % Ensure at least 3 data points per parameter 
+        ModelTypes{k}.MinMembers = ceil(6 + 3*(d-1)/2);
         
         ix = ~any(isnan(data(:,CovIx)),2);
         y = data(ix, CovIx);
