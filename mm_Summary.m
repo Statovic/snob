@@ -131,7 +131,7 @@ for k = 1:nClasses
             case 'sfa'
                 d = mm.ModelTypes{i}.nDim;
                 fprintf('%20s', 'SingleFA');        
-                fprintf('%s ', mm.opts.VarNames{Ivar(1)});                
+                fprintf('%10s ', mm.opts.VarNames{Ivar(1)});                
                 for j = 2:d
                     fprintf('%s ', mm.opts.VarNames{Ivar(j)});                
                 end

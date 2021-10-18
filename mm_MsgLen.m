@@ -105,8 +105,7 @@ for i = 1:mm.nModelTypes
             Atheta = Atheta + 3/2*sum(log(Nk)) + K*log(2*a_tau) + logstar(a_tau);               
             
         %% Logistic regression
-        case 'logreg'
-            
+        case 'logreg'            
             Atheta = Atheta + 3/2*sum(log(Nk));
     end
 end

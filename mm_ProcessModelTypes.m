@@ -15,7 +15,7 @@ if(length(unique(cols)) ~= length(cols))
 end
 
 %% Check that model type i was specified correctly
-switch lower(model_list{i})
+switch lower(model_list{i})       
     
     %% Beta distribution
     case {'beta'}

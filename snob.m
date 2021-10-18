@@ -63,6 +63,10 @@
 %   (.)    Gamma distribution ('gamma')
 %               p(X|mu,phi)      = 1/gamma(phi)/(mu/phi)^phi * x^(phi-1) * exp(-x/(mu/phi)),
 %                                  X > 0, mu > 0, phi > 0
+%               Parametarization (alpha/shape,beta/rate):
+%                                  alpha = phi, beta = phi / mu
+%               Parametarization (k/shape,theta/scale):
+%                                  k = phi, theta = mu / phi
 %   (.)    Laplace distribution ('laplace')
 %               p(X|mu,b)        = 1/2/b * exp(-abs(x - mu)/b),
 %                                   X \in R, mu \in R, b > 0

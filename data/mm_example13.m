@@ -1,11 +1,11 @@
-%% Example - Simulated data (mixtures of multivariate Gaussian distributions)
+%% Example - Simulated data (mixtures of single factor analysis models)
 clear;
 
 rng(1);
 
 %% Generate data
 K = 5;          % number of classes
-D = 2;          % dimension of each data point
+D = 5;          % dimension of each data point
 n = ones(1,K)*100;   % sample size of each class
 
 muMin = -15;    % Each mu \in [muMin, muMax]
@@ -19,7 +19,7 @@ Sigma = cell(K,1);
 for i = 1:K
     
     A     = randn(D,1);
-    A     = (A / norm(A)) * 5;
+    A     = (A / norm(A)) * (1+rand(1)*5);
     sigma1 = randi(2,D,1);
     Sigma1 = A*A' + diag(sigma1.^2);
     Mu{i} = rand(D,1)*muRange + muMin;
