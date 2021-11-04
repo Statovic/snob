@@ -38,3 +38,24 @@ mm_Summary(mm2);
 % Specifically, the two class model is approximately
 exp( -(mm.msglen - mm2.msglen) )
 % times more likely a posteriori than the three class model.
+
+% Plot the CDF of the fitted mixture model with 2 classes
+minX = min(acidity) - 1;    % range of values for plotting
+maxX = max(acidity) + 1;
+nPts = 1e3;
+x = linspace(minX, maxX, nPts)';
+y = zeros(nPts, 1);
+
+for k = 1:mm.nClasses
+    prop = mm.a(k); % mixing proportion
+    theta = mm.class{k}.model{1}.theta;
+    mu = theta(1);  % mean and std. deviation
+    sigma = sqrt(theta(2));
+    y = y + (prop * normcdf(x,mu,sigma));
+end
+
+figure;
+plot(x, y, 'k-');
+grid;
+xlabel('X', 'fontsize', 16);
+ylabel('F(X)', 'fontsize', 16);

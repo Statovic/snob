@@ -141,7 +141,7 @@ for k = 1:K
                 Sigma = reshape(theta(d+1:end),d,d);
                 
                 X0 = bsxfun(@minus, Y(I, m.Ivar), mu');
-                R = cholcov(Sigma,0);              
+                [R, err] = cholcov(Sigma,0);              
                 logSqrtDetSigma = sum(log(diag(R)));
                 xRinv = X0 / R;
                 quadform = sum(xRinv.^2, 2);

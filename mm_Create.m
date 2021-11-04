@@ -41,12 +41,19 @@ switch opts.Initialisation
     case 'kmeans++'
         
         if(K > 1)
-            [~, Dist] = kmeansinit(data, K);
+            nRep = 25; BestDist = []; target = inf;
+            for t = 1:nRep
+                [~, Dist] = kmeansinit(data, K);
+                S = sum(Dist(:));
+                if(S < target)
+                    BestDist = Dist; target = S;
+                end
+            end
             
-            R = bsxfun(@rdivide, Dist, sum(Dist,2));
+            R = bsxfun(@rdivide, BestDist, sum(BestDist,2));
             % Heuristic: stop points being assigned 100% to a single class
             R = bsxfun(@rdivide, 0.1+R, sum(0.1+R,2)); 
-            ix = sum(isnan(Dist),2) > 0;
+            ix = sum(isnan(BestDist),2) > 0;
             if(any(ix))                
                 t       = rand(sum(ix), K);
                 R(ix,:) = bsxfun(@rdivide, t, sum(t,2));

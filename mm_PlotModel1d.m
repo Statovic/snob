@@ -164,6 +164,8 @@ if(~strcmp(mm.ModelTypes{wModel}.type,'linreg') && ~strcmp(mm.ModelTypes{wModel}
     ylabel('Density','Fontsize',18);
     xlabel('Data','Fontsize',18);
     box;
+
+    hold off;
     
 elseif(strcmp(mm.ModelTypes{wModel}.type,'mvg'))
        

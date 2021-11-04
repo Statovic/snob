@@ -16,10 +16,10 @@
 %
 %   (.)    Univariate Gaussian distribution ('norm')
 %               p(X|mu, sigma^2) = (1/sqrt(2*pi*sigma^2)) * exp(-(x-mu)/2/sigma^2),
-%                                   X \in R, mu \in R, \sigma > 0
+%                                   X \in R, mu \in R, sigma > 0
 %   (.)    Multivariate Gaussian distribution ('mvg')
 %               p(X|mu, Sigma)   = (2*pi)^(-d/2) * det(Sigma)^(-1/2) * exp(-0.5*(x-mu)' inv(Sigma) (x-mu)),
-%                                   X \in R^d, mu \in R^d, \Sigma positive-definite
+%                                   X \in R^d, mu \in R^d, Sigma positive-definite
 %   (.)    Weibull distribution ('weibull')
 %               p(X|lambda, k)   = (k/lambda) * (x/lambda)^(k-1) * exp(-(x/lambda)^k),
 %                                   X > 0, lambda > 0, k > 0

@@ -8,8 +8,7 @@ load data/thyroid;
 % In this example we know that there exist three sub-populations in the
 % sample. The labels of the three populations are stored in the variable
 % "label" (Class attribute (1 = normal, 2 = hyper, 3 = hypo)). We will use
-% snob to attempt to discover these subpopulations and compare the results to
-% the actual labels.
+% snob to attempt to discover these subpopulations.
 
 % We will try and fit a few different distributions to this data.
 % multivariate Gaussian
