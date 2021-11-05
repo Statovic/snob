@@ -234,11 +234,13 @@ opts.emmaxiter      = inParser.Results.emmaxiter;   % maximum number of EM itera
 opts.display        = inParser.Results.display;     % verbose output [default display=true]
 opts.fixedstructure = inParser.Results.fixedstructure;     % do we attempt merger/split combos? [default fixedstructure=false]
 opts.greedy         = inParser.Results.greedy;      % if true, always pick the model with smallest message length; 
+opts.ModelList      = model_list;
                                                     % if false, pick model stochastically [default]
 opts.MaxTryCombines = inParser.Results.maxtrycombine;
 opts.SearchOptions  = optimoptions('fminunc','display','off');
 opts.NoCost         = inParser.Results.nocost;
 opts.VarNames       = upper(inParser.Results.varnames);
+
 
 %% Check Options
 if(any(mod(opts.nClasses,1)))
