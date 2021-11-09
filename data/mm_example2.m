@@ -48,10 +48,10 @@ y = zeros(nPts, 1);
 
 for k = 1:mm.nClasses
     prop = mm.a(k); % mixing proportion
-    theta = mm.class{k}.model{1}.theta;
+    theta = mm.class{k}.model{1}.theta; % parameters for class k
     mu = theta(1);  % mean and std. deviation
     sigma = sqrt(theta(2));
-    y = y + (prop * normcdf(x,mu,sigma));
+    y = y + (prop * normcdf(x,mu,sigma));   % CDF
 end
 
 figure;
@@ -59,3 +59,13 @@ plot(x, y, 'k-');
 grid;
 xlabel('X', 'fontsize', 16);
 ylabel('F(X)', 'fontsize', 16);
+
+
+% Now let's try fitting the same data using a mixutre model of
+% inverse Gaussian distributions...
+mm_ig = snob(acidity, {'igauss',1}, 'k', 5, 'varnames', {'Acidity'});
+
+% Print a matrix of KL divergences for both the Gaussian and 
+% inverse Gaussian models
+mm_KLstats(mm, acidity);
+mm_KLstats(mm_ig, acidity);

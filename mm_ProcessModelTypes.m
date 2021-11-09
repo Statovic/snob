@@ -24,6 +24,7 @@ switch lower(model_list{i})
             ModelTypes{k}.type = 'beta';
             ModelTypes{k}.Ivar = cols(j);            
             ModelTypes{k}.MinMembers = 5;        
+            ModelTypes{k}.Description = 'beta distribution';
             
             %% Error checking
             if(VarsUsed(cols(j)))
@@ -46,7 +47,8 @@ switch lower(model_list{i})
     case {'crndexp'}
         ModelTypes{k}.type = 'crndexp';
         ModelTypes{k}.Ivar = cols;
-        ModelTypes{k}.MinMembers = 5;            
+        ModelTypes{k}.MinMembers = 5;      
+        ModelTypes{k}.Description = 'exponential distribution with Type I random censoring';
         
         if(length(cols) ~= 2)
             error('Censored data must be specified in the form [y,delta], y \in R^+, delta \in {0,1}');
@@ -75,7 +77,8 @@ switch lower(model_list{i})
     case {'cfixexp'}
         ModelTypes{k}.type = 'cfixexp';
         ModelTypes{k}.Ivar = cols;
-        ModelTypes{k}.MinMembers = 5;            
+        ModelTypes{k}.MinMembers = 5;      
+        ModelTypes{k}.Description = 'exponential distribution with Type I fixed censoring';
         
         if(length(cols) ~= 2)
             error('Censored data must be specified in the form [y,delta], y \in R^+, delta \in {0,1}');
@@ -114,7 +117,8 @@ switch lower(model_list{i})
     case {'cfixweibull'}
         ModelTypes{k}.type = 'cfixweibull';
         ModelTypes{k}.Ivar = cols;
-        ModelTypes{k}.MinMembers = 5;            
+        ModelTypes{k}.MinMembers = 5;    
+        ModelTypes{k}.Description = 'Weibull distribution with Type I fixed censoring';        
         
         if(length(cols) ~= 2)
             error('Censored data must be specified in the form [y,delta], y \in R^+, delta \in {0,1}');
@@ -156,7 +160,8 @@ switch lower(model_list{i})
         for j = 1:length(cols)
             ModelTypes{k}.type = 'exp';
             ModelTypes{k}.Ivar = cols(j);            
-            ModelTypes{k}.MinMembers = 5;        
+            ModelTypes{k}.MinMembers = 5;       
+            ModelTypes{k}.Description = 'exponential distribution';                    
             
             %% Error checking
             if(VarsUsed(cols(j)))
@@ -181,7 +186,8 @@ switch lower(model_list{i})
         for j = 1:length(cols)
             ModelTypes{k}.type = 'gamma';
             ModelTypes{k}.Ivar = cols(j);            
-            ModelTypes{k}.MinMembers = 5;        
+            ModelTypes{k}.MinMembers = 5;      
+            ModelTypes{k}.Description = 'gamma distribution';                    
             
             %% Error checking
             if(VarsUsed(cols(j)))
@@ -208,6 +214,7 @@ switch lower(model_list{i})
             ModelTypes{k}.type = 'invGaussian';
             ModelTypes{k}.Ivar = cols(j);    
             ModelTypes{k}.MinMembers = 5;
+            ModelTypes{k}.Description = 'inverse Gaussian distribution';                    
 
             %% Error checking
             if(VarsUsed(cols(j)))
@@ -236,6 +243,7 @@ switch lower(model_list{i})
             ModelTypes{k}.type = 'multi';
             ModelTypes{k}.Ivar = cols(j);         
             ModelTypes{k}.MinMembers = 5;
+            ModelTypes{k}.Description = 'multinomial distribution';                    
             
             ix = ~isnan(data(:,ModelTypes{k}.Ivar));
             y = data(ix,ModelTypes{k}.Ivar);                     
@@ -264,6 +272,7 @@ switch lower(model_list{i})
     case {'vmf'}
         ModelTypes{k}.type = 'vmf';
         ModelTypes{k}.Ivar = cols;
+        ModelTypes{k}.Description = 'von Mises-Fisher distribution';                    
         
         %% Error checking
         CovIx = ModelTypes{k}.Ivar;
@@ -288,6 +297,7 @@ switch lower(model_list{i})
     case {'mvg','mvn'}
         ModelTypes{k}.type = 'mvg';
         ModelTypes{k}.Ivar = cols;
+        ModelTypes{k}.Description = 'multivariate Gaussian distribution';                    
         
         %% Error checking
         CovIx = ModelTypes{k}.Ivar;
@@ -316,6 +326,7 @@ switch lower(model_list{i})
             ModelTypes{k}.type = 'negb';
             ModelTypes{k}.Ivar = cols(j);
             ModelTypes{k}.MinMembers = 5;
+            ModelTypes{k}.Description = 'negative binomial distribution';                    
 
             %% Error checking
             if(VarsUsed(cols(j)))
@@ -346,6 +357,7 @@ switch lower(model_list{i})
             ModelTypes{k}.type = 'Gaussian';
             ModelTypes{k}.Ivar = cols(j);
             ModelTypes{k}.MinMembers = 5;
+            ModelTypes{k}.Description = 'Gaussian distribution';                    
 
             %% Error checking
             if(VarsUsed(cols(j)))
@@ -374,6 +386,7 @@ switch lower(model_list{i})
             ModelTypes{k}.type = 'Laplace';
             ModelTypes{k}.Ivar = cols(j);
             ModelTypes{k}.MinMembers = 5;
+            ModelTypes{k}.Description = 'Laplace distribution';                    
 
             %% Error checking
             if(VarsUsed(cols(j)))
@@ -401,7 +414,8 @@ switch lower(model_list{i})
         for j = 1:length(cols)
             ModelTypes{k}.type = 'Poisson';
             ModelTypes{k}.Ivar = cols(j);
-            ModelTypes{k}.MinMembers = 5; 
+            ModelTypes{k}.MinMembers = 5;
+            ModelTypes{k}.Description = 'Poisson distribution';                    
 
             %% Error checking
             if(VarsUsed(cols(j)))
@@ -430,6 +444,7 @@ switch lower(model_list{i})
             ModelTypes{k}.type = 'geometric';
             ModelTypes{k}.Ivar = cols(j);
             ModelTypes{k}.MinMembers = 5; 
+            ModelTypes{k}.Description = 'geometric distribution';                    
 
             %% Error checking
             if(VarsUsed(cols(j)))
@@ -453,7 +468,8 @@ switch lower(model_list{i})
     %% Single-factor analysis
     case {'sfa'}
         ModelTypes{k}.type = 'sfa';
-        ModelTypes{k}.Ivar = cols;        
+        ModelTypes{k}.Ivar = cols;   
+        ModelTypes{k}.Description = 'single factor analysis model';                    
         
         %% Error checking
         CovIx = ModelTypes{k}.Ivar;
@@ -484,7 +500,8 @@ switch lower(model_list{i})
         for j = 1:length(cols)        
             ModelTypes{k}.type = 'weibull';
             ModelTypes{k}.Ivar = cols(j);       
-            ModelTypes{k}.MinMembers = 5;        
+            ModelTypes{k}.MinMembers = 5;   
+            ModelTypes{k}.Description = 'Weibull distribution';                    
 
             %% Error checking
             if(VarsUsed(cols(j)))
@@ -516,7 +533,8 @@ switch lower(model_list{i})
         ModelTypes{k}.type = 'linreg';
         ModelTypes{k}.Ivar = TargetIx;
         ModelTypes{k}.CovIx = CovIx;
-        ModelTypes{k}.MinMembers = length(CovIx) + 3;        
+        ModelTypes{k}.MinMembers = length(CovIx) + 3;     
+        ModelTypes{k}.Description = 'Gaussian linear regression';                      
         
         %% Error checking
         if(VarsUsed(TargetIx))
@@ -556,7 +574,8 @@ switch lower(model_list{i})
         ModelTypes{k}.type = 'logreg';
         ModelTypes{k}.Ivar = TargetIx;
         ModelTypes{k}.CovIx = CovIx;
-        ModelTypes{k}.MinMembers = length(CovIx) + 3;        
+        ModelTypes{k}.MinMembers = length(CovIx) + 3;    
+        ModelTypes{k}.Description = 'logistic regression';                    
         
         %% Error checking
         if(VarsUsed(TargetIx))

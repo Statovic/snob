@@ -44,14 +44,14 @@ switch mm.ModelTypes{wModel}.type
             max_mvg = max(max_mvg, mu_mvg' + 3*sqrt(Sigma_mvg(1:3:4)));
         end        
 
-    case 'beta'
+    case 'exp'
         for k = 1:K
             lam = mm.class{k}.model{wModel}.theta(1);
             mu(k) = lam;
             tau(k) = lam^2;
         end 
         
-    case 'exp'
+    case 'beta'
         for k = 1:K
             ap = mm.class{k}.model{wModel}.theta(1);
             bp = mm.class{k}.model{wModel}.theta(2);

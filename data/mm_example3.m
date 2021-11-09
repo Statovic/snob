@@ -27,3 +27,10 @@ msglen = [mm_mvg.msglen, mm_sfa.msglen, mm_norm.msglen, mm_lapl.msglen];
 % The model with the smallest message length is the single factor analysis
 % model. Note that this model has 3 classes. 
 mm_Summary(mm_sfa);
+
+%% Print the KL divergence matrix for the MVG model
+% This is a matrix of KL divergences from class i to class j for each
+% attribute. 
+% The class labelled "Pop" is the model with 1 class where all data points
+% belong to that one class.
+mm_KLstats(mm_mvg, x);

@@ -25,3 +25,6 @@ end
 %% Mixture model
 mm = snob(data, {'mvg',1:D}, 'k', 1);
 mm_Summary(mm);
+
+%% Print matrix of KL divergences
+mm_KLstats(mm, data);

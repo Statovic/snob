@@ -1,5 +1,8 @@
 %RANDINDEX    Computes the Rand index and the Adjusted Rand Index (ARI)
 %  RANDINDEX(.) computes the Rand index and the Adjusted Rand Index (ARI)
+%  Code uses 
+%  https://stackoverflow.com/questions/15793172/efficiently-generating-unique-pairs-of-integers
+%  for generating all unique pairs.
 %  
 %  The input arguments are:
 %   X    - partition, where each element of X is an integer in [1,numClassesX]
@@ -23,7 +26,7 @@ X = X(:); Y = Y(:);
 N = length(X);
 a = 0; b = 0; c = 0; d = 0;
 
-if(N > 1e3) % slow, but uses little memory
+if(N > 1e3) % slower, but uses little memory
     for i = 1:N-1
         for j = i+1:N
             a = a + (X(i) == X(j) && Y(i) == Y(j));
@@ -39,7 +42,7 @@ else
     % q = floor(sqrt(8*(k-1) + 1)/2 + 3/2);
     % p = k - (q-1).*(q-2)/2;    
 
-    % Fast, but uses a lot of memory
+    % Faster, but uses a lot of memory
     k = 1:(N/2*(N-1));
     q = floor(sqrt(8*(k-1) + 1)/2 + 3/2);
     p = k - (q-1).*(q-2)/2;
