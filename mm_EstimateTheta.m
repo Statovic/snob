@@ -65,6 +65,7 @@ for k = wClasses
             Coeff = Coeff ./ Coeff(1);            
             
             lambda = cubicroots(Coeff(2), Coeff(3), Coeff(4));
+            lambda = max(lambda, 1e-3);
             
             model.theta = lambda;
             

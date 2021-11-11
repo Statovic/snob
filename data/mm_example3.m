@@ -28,9 +28,19 @@ msglen = [mm_mvg.msglen, mm_sfa.msglen, mm_norm.msglen, mm_lapl.msglen];
 % model. Note that this model has 3 classes. 
 mm_Summary(mm_sfa);
 
-%% Print the KL divergence matrix for the MVG model
+% Print the KL divergence matrix for the SFA model
 % This is a matrix of KL divergences from class i to class j for each
 % attribute. 
 % The class labelled "Pop" is the model with 1 class where all data points
 % belong to that one class.
-mm_KLstats(mm_mvg, x);
+fprintf('Matrix of KL divergences:\n')
+mm_KLstats(mm_sfa, x);
+
+% Compute adjusted rand index for the best model
+TrueInd = label;
+[~,EstInd] = max(mm_sfa.r, [], 2);          % Estimated class assignments
+[r, adjr] = RandIndex(TrueInd, EstInd);     % Compute Rand index and ARI
+
+fprintf('\n')
+fprintf('*** Rand index = %5.3f, Adjusted rand index (ARI) = %5.3f\n', r, adjr);
+fprintf('\n')

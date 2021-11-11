@@ -106,10 +106,7 @@ switch type
         mu1 = thetaTgt(1); phi1 = thetaTgt(2);
         k1 = phi1; theta1 = mu1 / phi1;
 
-        % estimate KL numerically as no closed form available
-        Nmax = 1e7; 
-        Entropy = k0+log(theta0)+gammaln(k0)+(1-k0)*psi(k0);
-        kl = gamlike([k1,theta1], gamrnd(k0,theta0,Nmax,1)) ./ Nmax - Entropy;
+        kl = -k0 + (k0*theta0)/theta1 + k1*log(theta1/theta0) - gammaln(k0) + gammaln(k1) + (k0 - k1)*psi(k0);
     
     case 'Gaussian'
         m0 = thetaSrc(1); v0 = thetaSrc(2);

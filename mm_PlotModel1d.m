@@ -23,102 +23,16 @@ end
 n = 1e3; % how many points to use for graph
 style = {'r--','g--','k--','m--','y--','c--','r:','g:','k:','m:','y:','c:'}; % line styles
 
-%% Determine min/max plot range as [mean - 3*std, mean + 3*std]
+% %% Determine min/max plot range 
 K = mm.nClasses;
-mu = zeros(K,1);
-tau = zeros(K,1);
-switch mm.ModelTypes{wModel}.type    
-    case 'mvg'
-        if(mm.ModelTypes{wModel}.nDim > 2)
-            error('Can only plot 2D Gaussians');
-        end
-        min_mvg = [inf, inf];
-        max_mvg = [-inf, -inf];
-        for k = 1:K
-            d = mm.ModelTypes{wModel}.nDim;
-            theta = mm.class{k}.model{wModel}.theta;
-            mu_mvg = theta(1:d);
-            Sigma_mvg = reshape(theta(d+1:end),d,d);   
-            
-            min_mvg = min(min_mvg, mu_mvg' - 3*sqrt(Sigma_mvg(1:3:4)));
-            max_mvg = max(max_mvg, mu_mvg' + 3*sqrt(Sigma_mvg(1:3:4)));
-        end        
-
-    case 'exp'
-        for k = 1:K
-            lam = mm.class{k}.model{wModel}.theta(1);
-            mu(k) = lam;
-            tau(k) = lam^2;
-        end 
-        
-    case 'beta'
-        for k = 1:K
-            ap = mm.class{k}.model{wModel}.theta(1);
-            bp = mm.class{k}.model{wModel}.theta(2);
-            mu(k) = ap/(ap+bp);
-            tau(k) = ap*bp/(ap+bp)^2/(ap+bp+1);
-        end 
-        
-    case 'weibull'
-        for k = 1:K
-            lam = mm.class{k}.model{wModel}.theta(1);
-            kwbl = mm.class{k}.model{wModel}.theta(2) ;
-            mu(k) = lam*(log(2))^(1/kwbl);
-            tau(k) = lam^2*(gamma(1+2/kwbl) - gamma(1+1/kwbl)^2);            
-        end    
-        
-    case 'Gaussian'
-        for k = 1:K
-            mu(k) = mm.class{k}.model{wModel}.theta(1);
-            tau(k) = mm.class{k}.model{wModel}.theta(2);
-        end
-        
-    case 'Laplace'
-        for k = 1:K
-            mu(k) = mm.class{k}.model{wModel}.theta(1);
-            tau(k) = 2 * mm.class{k}.model{wModel}.theta(2)^2;
-        end        
-                
-      case 'invGaussian'
-        for k = 1:K
-            mu(k) = mm.class{k}.model{wModel}.theta(1);
-            lam = mm.class{k}.model{wModel}.theta(2);
-            tau(k) = mu(k)^3 / lam;
-        end
-        
-    case 'Poisson'
-        for k = 1:K
-            lam = mm.class{k}.model{wModel}.theta(1);
-            mu(k) = lam;
-            tau(k) = lam;
-        end
-        
-    case 'gamma'
-        for k = 1:K
-            mu(k) = mm.class{k}.model{wModel}.theta(1);
-            tau(k) = mu(k)^2 / mm.class{k}.model{wModel}.theta(2);
-        end
-        
-    case 'multi'
-        probs = zeros(mm.ModelTypes{wModel}.nStates, K);
-        for k = 1:K
-            probs(:,k) = mm.class{k}.model{wModel}.theta;
-        end        
-
-    otherwise
-        error('Plotting not implemented for this type of model');
-end
-
-min_val = mu - 3*sqrt(tau);
-max_val = mu + 3*sqrt(tau);
-min_val = min(min_val);
-max_val = max(max_val);
+[~,blims] = histcounts(data(:,wModel));
+min_val = min(blims);
+max_val = max(blims);
 
 switch mm.ModelTypes{wModel}.type
     case 'beta'
         min_val = 0; 
-        max_val = 1;
-        
+        max_val = 1;        
     case 'weibull'
         min_val = max(min_val, 1e-3);
     case 'exp'
@@ -128,6 +42,10 @@ switch mm.ModelTypes{wModel}.type
         max_val = max(data(:,wModel))*1.5;
     case 'Poisson'
         min_val = max(min_val, 1e-3);             
+    case 'geometric'
+        min_val = max(min_val, 1e-3);         
+    case 'negb'
+        min_val = max(min_val, 1e-3);         
 end
 
 %% Plot data 

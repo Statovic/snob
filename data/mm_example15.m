@@ -18,3 +18,5 @@ VarNames = {'Fin. Aid','Work','Married','Parole','#Conv','Age','Week','Arrested'
 mm = snob(data, {'multi',1:4, 'negb',5,'norm',6,'cfixexp',7:8}, 'k', 1, 'varnames', VarNames);
 mm_Summary(mm);
 
+% Print KL divergence matrices
+mm_KLstats(mm, data);

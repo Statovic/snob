@@ -6,8 +6,8 @@ rng(1);
 
 % Generate data from a mixture of two single factor analysis models.
 % A single factor analysis model is defined as
-%               x_nk             = mu_k + v_n a_k + sigma_k*r_nk,
-%                                   {v_n, {r_nk, k=1,...,K},n=1,...,N} ~ N(0,1)
+%               x_nk     = mu_k + v_n a_k + sigma_k*r_nk,
+%                         {v_n, {r_nk, k=1,...,K},n=1,...,N} ~ N(0,1)
 %               where a_k are the factor loadings, v_n are the factor scores.
 a1     = randn(5,1);
 a1     = 2*(a1 / norm(a1));

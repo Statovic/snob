@@ -147,6 +147,41 @@
 %  Returns:
 %   mm    - structure respresenting the complete mixture model
 %
+%   Key variables:
+%   nClasses     - number of classes
+%   nModelTypes  - number of attributes (eg of attributes: gender, height, etc)
+%   a            - estimated mixing proportions (sum up to 1)
+%   L            - negative log-likelihood of the data under this mixture
+%   msglen       - MML codelength of the estimated mixture model
+%   class{i}     - each class consists of M attributes which can be accesed
+%                  with the model substructure. For example:
+%                  mm.class{1}.model{1} is the statistical model for attribute 1 in class 1. 
+%                  mm.class{2}.model{1} is the statistical model for attribute 1 in class 2. 
+%                  etc.
+%                  Parameters of the model are found in the field theta (see below). 
+%
+%  How to interpret the parameter field "theta":
+%  'beta'        - [a, b] 
+%  'exp'         - lambda 
+%  'gamma'       - [mu, phi]
+%                  Parametarization (alpha/shape,beta/rate):
+%                      alpha = phi, beta = phi / mu
+%                  Parametarization (k/shape,theta/scale):
+%                      k = phi, theta = mu / phi
+%  'geometric'   - theta
+%  'igauss'      - [mu, lambda]
+%  'norm'        - [mu, sigma^2]
+%  'laplace'     - [mu, b]
+%  'linreg'      - [sigma^2, b0, b']
+%  'logreg'      - [b0, b']
+%  'multi'       - [p0,p1,...] s.t. p0+p1+...=1
+%  'mvg'         - [mu', Sigma(:)']
+%  'negb'        - [mu, phi] where r = phi, p = 1-mu/(mu+phi)
+%  'poisson'     - lambda
+%  'sfa'         - [mu', sigma', a']
+%  'weibull'     - [lambda,k]
+%  'vmf'         - [kappa, mu']
+%
 %
 %  Examples:
 %  For examples of SNOB usage, please see data/mm_example1.m, data/mm_example2.m, etc.
@@ -186,7 +221,7 @@ VERSION = '0.50';
 inParser = inputParser;  
 
 % Default parameter values
-defaultMaxiter   = 100; 
+defaultMaxiter   = 50; 
 defaultEMMaxiter = 100;
 defaultKinit     = 1;
 defaultToDisplay = true;

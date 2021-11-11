@@ -23,6 +23,9 @@ mm = snob(acidity, {'norm',1}, 'k', 5, 'varnames', {'Acidity'});
 % The total message length of this model is ~209 nits.
 mm_Summary(mm);
 
+% The mixing proportions of the mixture model are stored in mm.a
+% The [mean, variance] parameters for class i are stored in mm.class{i}.model{1}.theta
+
 % Plot the mixture distribution for the acidity data
 mm_PlotModel1d(mm, acidity, 1);
 

@@ -124,8 +124,21 @@ for k = wClass
                 
                 % Negative log-likelihood
                 subL(I) = lambda - Y(I, m.Ivar)*log(lambda) + gammaln(Y(I,m.Ivar)+1);
+
+            %% Geometric distribution
+            case 'geometric'
+                % Parameters
+                theta = m.theta(1);
                 
+                subL(I) = -Y(I, m.Ivar)*log(1 - theta) - log(theta);
                 
+            %% Negative binomial
+            case 'negb'
+                mu = m.theta(1);
+                phi = m.theta(2);
+                
+                subL(I) = -gammaln(Y(I, m.Ivar)+phi) + gammaln(phi) + gammaln(Y(I, m.Ivar)+1) - Y(I, m.Ivar).*log(mu/(mu+phi)) - phi*log(phi/(mu+phi));                
+
             %% Inverse Gaussian
             case 'invGaussian'
                 % Parameters

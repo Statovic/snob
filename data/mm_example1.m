@@ -22,6 +22,9 @@ mm = snob(x, {'exp',1},'k',5,'display',false);
 % The model discovered is x ~ 0.42 Exp(0.9) + 0.58 Exp(6.4)
 mm_Summary(mm);
 
+% The mixing proportions of the mixture model are stored in mm.a
+% The mean parameter for class i is stored in mm.class{i}.model{1}.theta
+
 % Print Rand index and Adjusted Rand Index (ARI)
 TrueInd = [ones(60,1); 2*ones(40,1)];   % True class assignments
 [~,EstInd] = max(mm.r, [], 2);          % Estimated class assignments

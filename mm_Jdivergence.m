@@ -1,3 +1,4 @@
+% BETA - work in progress
 function Jdiv = mm_Jdivergence(mm, wModels)
 
 % If model matrix wasn't passed
