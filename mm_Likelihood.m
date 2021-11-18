@@ -158,6 +158,16 @@ for k = 1:K
 
                 % Negative log-likelihood
                 subL(I) = (1/2)*log(2*pi*tau) + (Y(I, m.Ivar) - mu).^2 / 2 / tau;                
+
+            %% Univariate lognormal model
+            case 'lognorm'
+
+                % Parameters
+                mu  = m.theta(1);
+                tau = m.theta(2);
+
+                % Negative log-likelihood
+                subL(I) = (1/2)*log(2*pi*tau) + (log(Y(I, m.Ivar)) - mu).^2 / 2 / tau + log(Y(I, m.Ivar));                                
                 
             %% Poisson distribution
             case 'Poisson'

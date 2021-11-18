@@ -173,6 +173,21 @@ for k = wClasses
             tau = max( (s2 - 2*mu*s + Nk*mu^2) / (Nk-1), 1e-3);
 
             model.theta = [mu; tau];
+
+            %% Univariate lognormal distribution
+            case 'lognorm'
+
+            % Sufficient statistics
+            s  = sum(r(ix) .* log(y(ix)));           % sum log(y_i)
+            s2 = sum(r(ix) .* (log(y(ix)).^2));      % sum log(y_i)^2
+
+            % Estimate parameters
+            Nk  = sum(r(ix));                   % n
+            mu  = s/Nk;
+            tau = max( (s2 - 2*mu*s + Nk*mu^2) / (Nk-1), 1e-3);
+
+            model.theta = [mu; tau];
+            
             
             %% Single factor analysis
             case 'sfa'

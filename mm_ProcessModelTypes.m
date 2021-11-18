@@ -377,7 +377,38 @@ switch lower(model_list{i})
             
             k = k + 1;
         end
-        
+
+    %% Univariate lognormal distribution
+    case {'lognorm','lognormal','loggauss'}
+                
+        %% Basic data
+        for j = 1:length(cols)        
+            ModelTypes{k}.type = 'lognorm';
+            ModelTypes{k}.Ivar = cols(j);
+            ModelTypes{k}.MinMembers = 5;
+            ModelTypes{k}.Description = 'Lognormal distribution';                    
+
+            %% Error checking
+            if(VarsUsed(cols(j)))
+                error(['Data column ', int2str(cols(j)), ': multiple models defined']);
+            end     
+            
+            ix = ~isnan(data(:,ModelTypes{k}.Ivar));            
+            y = data(ix,ModelTypes{k}.Ivar);            
+            if(std(y) == 0)
+                error(['Data column ', int2str(cols(j)), ': zero variance']);
+            end   
+            if(min(y) <= 0)
+                error('Data cannot be negative or zero');
+            end
+            
+            %% Prior hyperparameters
+            % Range for uniform distribution
+            ModelTypes{k}.mu0 = min(y);
+            ModelTypes{k}.mu1 = max(y);
+            
+            k = k + 1;
+        end        
     %% Univariate Laplace distribution
     case {'laplace'}
                 

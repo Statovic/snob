@@ -48,6 +48,17 @@ for i = 1:mm.nModelTypes
             % two mu hyperparameters; each coded as log(n)/2
             % one tau hyperparameter coded as logstar(a)
             Atheta = Atheta + sum(log(Nk)) + K*log(2*a_tau) + logstar(a_tau);   
+
+        %% Hyperparameters mu \in [mu0,mu1], tau \in [exp(-a),exp(+a)]
+        case 'lognorm'
+            tau = zeros(K,1);
+            for k = 1:K    
+                tau(k) = mm.class{k}.model{i}.theta(2);
+            end
+            a_tau = FindPriorRange(tau);
+            % two mu hyperparameters; each coded as log(n)/2
+            % one tau hyperparameter coded as logstar(a)
+            Atheta = Atheta + sum(log(Nk)) + K*log(2*a_tau) + logstar(a_tau);               
             
         %% Laplace hyperparameters mu \in [mu0,mu1], tau \in [exp(-a),exp(+a)]
         case 'Laplace'
@@ -341,6 +352,18 @@ for k = 1:K
                 h_theta = log(Rmu) + log(tau);
                 F_theta = log(Nk(k)) - 3*log(tau)/2 - log(2)/2;
                 AssLen = h_theta + F_theta;
+
+            %% Univariate Gaussian model
+            case 'lognorm'
+                nParams = 2;
+                totalParams = totalParams + nParams;
+                        
+                Rmu = mm.ModelTypes{i}.mu1 - mm.ModelTypes{i}.mu0;
+                
+                tau = model.theta(2);
+                h_theta = log(Rmu) + log(tau);
+                F_theta = log(Nk(k)) - log(tau) + log(2)/2;
+                AssLen = h_theta + F_theta;                
                 
             %% Poisson model
             case 'Poisson'

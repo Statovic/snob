@@ -36,6 +36,9 @@ for i = 1:nModels
             case 'Gaussian'    
                 str = sprintf('[%.2f %.2f]', theta(1),sqrt(theta(2)));                
                 mdlType = 'Gaussian';
+            case 'lognorm'    
+                str = sprintf('[%.2f %.2f]', theta(1),sqrt(theta(2)));                
+                mdlType = 'Lognormal';                
             case 'multi'                  
                 str = sprintf('[');
                 for j = 1:length(theta)
@@ -109,6 +112,8 @@ for i = 1:nModels
                 str = '[proportions]';
             case 'Gaussian'
                 str = '[mean sd]';
+            case 'lognorm'
+                str = '[mean sd]';                
             case 'weibull'
                 str = '[lambda k]';
             case 'cfixweibull'     

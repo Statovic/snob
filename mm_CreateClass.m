@@ -94,11 +94,16 @@ for i = 1:length(ModelTypes)
             class.model{i}.theta = rand(2,1);            % [mean, dispersion]
             
         %% Create a Gaussian model
-        case 'Gaussian'
-            
+        case 'Gaussian'            
             class.model{i}.type  = 'Gaussian';           % type
             class.model{i}.Ivar  = ModelTypes{i}.Ivar;   % which variable in the data?
             class.model{i}.theta = rand(2,1);            % [mean, variance]            
+
+        %% Create a Gaussian model
+        case 'lognorm'            
+            class.model{i}.type  = 'lognorm';            % type
+            class.model{i}.Ivar  = ModelTypes{i}.Ivar;   % which variable in the data?
+            class.model{i}.theta = rand(2,1);            % [mean, variance]                        
             
         %% Create a Poisson model
         case 'Poisson'

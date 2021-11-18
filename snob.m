@@ -48,6 +48,9 @@
 %   (.)    Inverse Gaussian distribution ('igauss')
 %               p(X|mu,lambda)   = sqrt(1/2/pi/lambda/x^3) * exp(-(x-mu)^2/2/mu^2/x/lambda),
 %                                   X > 0, mu > 0, lambda > 0
+%   (.)    Lognormal distribution ('lognorm')
+%               p(X|mu, sigma^2) = (1/x/sqrt(2*pi*sigma^2)) * exp(-(log(x)-mu)/2/sigma^2),
+%                                   X \in R, mu \in R, sigma > 0
 %   (.)    Poisson distribution ('poisson')
 %               p(X|lambda)      = lambda^x * exp(-lambda) / x!,
 %                                   X \in {0,1,2,3,...}, lambda > 0
@@ -99,6 +102,7 @@
 %                       'igauss'    -> Inverse Gaussian distribution
 %                       'laplace'   -> Univariate Laplace distribution
 %                       'linreg'    -> Gaussian linear regression
+%                       'lognorm'   -> Lognormal distribution
 %                       'logreg'    -> Logistic regression
 %                       'multi'     -> Multinomial distribution
 %                       'mvg'       -> Multivariate normal distribution 
@@ -171,6 +175,7 @@
 %  'geometric'   - theta
 %  'igauss'      - [mu, lambda]
 %  'norm'        - [mu, sigma^2]
+%  'lognorm'     - [mu, sigma^2]
 %  'laplace'     - [mu, b]
 %  'linreg'      - [sigma^2, b0, b']
 %  'logreg'      - [b0, b']

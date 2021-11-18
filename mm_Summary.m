@@ -115,6 +115,12 @@ for k = 1:nClasses
                 fprintf('%10s\n', mm.opts.VarNames{Ivar(1)});
                 fprintf('%43s = %7.2f%10s = %7.2f', 'mu',theta(1),'std',sqrt(theta(2)));
 
+            %% Gaussian
+            case 'lognorm'
+                fprintf('%20s', 'Lognormal');
+                fprintf('%10s\n', mm.opts.VarNames{Ivar(1)});
+                fprintf('%43s = %7.2f%10s = %7.2f', 'mu',theta(1),'std',sqrt(theta(2)));                
+
             %% Laplace
             case 'Laplace'
                 fprintf('%20s', 'Laplace');

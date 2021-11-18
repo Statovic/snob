@@ -113,6 +113,11 @@ switch type
         m1 = thetaTgt(1); v1 = thetaTgt(2);
         kl = 0.5*(v0/v1 + (m1 - m0)^2/v1 + log(v1/v0) - 1);
 
+    case 'lognorm'
+        m0 = thetaSrc(1); v0 = thetaSrc(2);
+        m1 = thetaTgt(1); v1 = thetaTgt(2);        
+        kl = 0.5*(v0/v1 + (m1 - m0)^2/v1 + log(v1/v0) - 1 );
+
     case 'geometric'
         p = thetaSrc; q = thetaTgt;
         kl = log(p/q) - (1 - p)/p*log((1 - q)/(1 - p));
