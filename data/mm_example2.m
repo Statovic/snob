@@ -64,7 +64,7 @@ xlabel('X', 'fontsize', 16);
 ylabel('F(X)', 'fontsize', 16);
 
 
-% Now let's try fitting the same data using a mixutre model of
+% Now let's try fitting the same data using a mixture model of
 % inverse Gaussian distributions...
 mm_ig = snob(acidity, {'igauss',1}, 'k', 5, 'varnames', {'Acidity'});
 
