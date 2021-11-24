@@ -44,7 +44,7 @@ switch opts.Initialisation
             nRep = 25; BestDist = []; target = inf;
             for t = 1:nRep
                 [~, Dist] = kmeansinit(data, K);
-                S = sum(Dist(:));
+                S = sum(Dist(:),'omitnan');
                 if(S < target)
                     BestDist = Dist; target = S;
                 end

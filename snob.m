@@ -49,7 +49,7 @@
 %               p(X|mu,lambda)   = sqrt(1/2/pi/lambda/x^3) * exp(-(x-mu)^2/2/mu^2/x/lambda),
 %                                   X > 0, mu > 0, lambda > 0
 %   (.)    Lognormal distribution ('lognorm')
-%               p(X|mu, sigma^2) = (1/x/sqrt(2*pi*sigma^2)) * exp(-(log(x)-mu)/2/sigma^2),
+%               p(X|mu, sigma^2) = (1/x/sqrt(2*pi*sigma^2)) * exp(-(log(x)-mu)^2/2/sigma^2),
 %                                   X \in R, mu \in R, sigma > 0
 %   (.)    Poisson distribution ('poisson')
 %               p(X|lambda)      = lambda^x * exp(-lambda) / x!,
@@ -220,7 +220,7 @@
 function mm = snob(data, model_list, varargin)
 
 %% Version number
-VERSION = '0.50';
+VERSION = '0.60';
 
 %% Parse options
 inParser = inputParser;  
