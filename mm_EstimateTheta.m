@@ -213,8 +213,19 @@ for k = wClasses
             ix  = ~any(isnan(y),2);                                 
             Nk  = sum(r(ix));                   % n
             mu  = sum(bsxfun(@times, y(ix,:), r(ix))) / Nk;
-            xmu = bsxfun(@minus, y(ix,:), mu);
-            Sigma = (bsxfun(@times, xmu, r(ix))'*xmu + eye(d)) / (Nk+d);
+            if(d > 2)
+                xmu = bsxfun(@minus, y(ix,:), mu);
+                Sigma = (bsxfun(@times, xmu, r(ix))'*xmu + eye(d)) / (Nk+d);
+            else
+                S = sum(bsxfun(@times,y(ix,:).^2,r(ix))) - 2*mu.*sum(bsxfun(@times,y(ix,:),r(ix))) + Nk.*mu.*mu;
+                S = S ./ Nk;
+                rsamp = corr(y(ix,1), y(ix,2));
+                term = sqrt((Nk+2)^2 - 12*rsamp^2*(Nk-1));
+                s2 = Nk*S*(Nk+2+term) / ((Nk+2)*(Nk-1)*2);
+                s = sqrt(s2);
+                rho = (Nk+2-term) / (6*rsamp);
+                Sigma = [s2(1), s(1)*s(2)*rho; s(1)*s(2)*rho, s2(2)];
+            end
             
             model.theta = [mu(:); Sigma(:)];                
                             

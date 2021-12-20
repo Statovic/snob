@@ -77,6 +77,20 @@ for i = 1:mm.nModelTypes
             d = mm.ModelTypes{i}.nDim;
             Atheta = Atheta + sum(log(Nk)) * d;
 
+            if(d == 2) % specialisation for bivariate normal
+            sigma = zeros(2*K,1);
+                t = 1;
+                for k = 1:2:2*K
+                    sigma(k) = sqrt( mm.class{t}.model{i}.theta(3) );
+                    sigma(k+1) = sqrt( mm.class{t}.model{i}.theta(end) );
+                    t = t + 1;
+                end
+                a_tau = FindPriorRange(sigma);
+
+                Atheta = Atheta + 2*K*log(2*a_tau) + logstar(a_tau);  
+            end
+
+
         %% Single factor analysis model
         case 'sfa'
                        
@@ -331,14 +345,26 @@ for k = 1:K
                 
                 theta = model.theta;
                 Sigma = reshape(theta(d+1:end),d,d);                
-                
-                R = cholcov(Sigma,0);              
-                logDetSigma = 2*sum(log(diag(R)));
-                
-                Rmu = mm.ModelTypes{i}.mu1 - mm.ModelTypes{i}.mu0;
-                
-                h_theta = sum(log(Rmu)) + (d+1)*logDetSigma + trace(R\(R'\eye(d)))/2 + log(2)*d*(d+1)/2 + logmvgamma(d,(d+1)/2);
-                F_theta = d*(d+3)/4*log(Nk(k)) - d/2*log(2) -(d+2)/2*logDetSigma;
+                Rmu = mm.ModelTypes{i}.mu1 - mm.ModelTypes{i}.mu0;                
+
+                if(d > 2)
+                    R = cholcov(Sigma,0);              
+                    logDetSigma = 2*sum(log(diag(R)));                    
+                    
+                    h_theta = sum(log(Rmu)) + (d+1)*logDetSigma + trace(R\(R'\eye(d)))/2 + log(2)*d*(d+1)/2 + logmvgamma(d,(d+1)/2);
+                    F_theta = d*(d+3)/4*log(Nk(k)) - d/2*log(2) -(d+2)/2*logDetSigma;
+                else
+                    sigma = sqrt(diag(Sigma));
+                    s1 = sigma(1); s2 = sigma(2);
+                    rho = Sigma(1,2) ./ (s1 * s2);
+
+                    h_mu = sum(log(Rmu));
+                    h_sigma = log(s1) + log(s2);
+                    h_rho = log(2);
+
+                    h_theta = h_mu + h_sigma + h_rho;                    
+                    F_theta = log(2) + 5*log(Nk(k))/2 - 2*log(s1) - 2*log(s2) - 2*log(1-rho*rho);
+                end
                 AssLen = h_theta + F_theta;                
                                 
             %% Univariate Gaussian model

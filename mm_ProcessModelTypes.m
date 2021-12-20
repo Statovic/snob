@@ -316,7 +316,8 @@ switch lower(model_list{i})
         ix = ~any(isnan(data(:,CovIx)),2);
         y = data(ix, CovIx);
         ModelTypes{k}.mu0 = min(y);
-        ModelTypes{k}.mu1 = max(y);             
+        ModelTypes{k}.mu1 = max(y);   
+
         
     %% Negative binomial distribution
     case {'negb','nbin'}
