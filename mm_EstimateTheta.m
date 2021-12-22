@@ -217,9 +217,13 @@ for k = wClasses
                 xmu = bsxfun(@minus, y(ix,:), mu);
                 Sigma = (bsxfun(@times, xmu, r(ix))'*xmu + eye(d)) / (Nk+d);
             else
-                S = sum(bsxfun(@times,y(ix,:).^2,r(ix))) - 2*mu.*sum(bsxfun(@times,y(ix,:),r(ix))) + Nk.*mu.*mu;
+                S1 = sum(bsxfun(@times, y(ix,:), r(ix)));    % sum( r y )
+                S2 = sum(bsxfun(@times, y(ix,:).^2, r(ix))); % sum( r y^2 )
+                S3 = sum(r(ix) .* y(ix,1) .* y(ix,2));       % sum( r y1 y2 )
+                S = S2 - 2*mu.*S1 + Nk.*mu.*mu;              % sample variance
                 S = S ./ Nk;
-                rsamp = corr(y(ix,1), y(ix,2));
+                rsamp = (Nk*S3 - S1(1)*S1(2)) / sqrt(Nk*S2(1) - S1(1)*S1(1)) / sqrt(Nk*S2(2) - S1(2)*S1(2));
+                
                 term = sqrt((Nk+2)^2 - 12*rsamp^2*(Nk-1));
                 s2 = Nk*S*(Nk+2+term) / ((Nk+2)*(Nk-1)*2);
                 s = sqrt(s2);

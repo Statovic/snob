@@ -78,7 +78,7 @@ for i = 1:mm.nModelTypes
             Atheta = Atheta + sum(log(Nk)) * d;
 
             if(d == 2) % specialisation for bivariate normal
-            sigma = zeros(2*K,1);
+                sigma = zeros(2*K,1);
                 t = 1;
                 for k = 1:2:2*K
                     sigma(k) = sqrt( mm.class{t}.model{i}.theta(3) );

@@ -4,9 +4,9 @@ clear;
 rng(1);
 
 %% Generate data
-K = 2;          % number of classes
+K = 3;          % number of classes
 D = 2;          % dimension of each data point
-n = ones(1,K)*500;   % sample size of each class
+n = ones(1,K)*50;   % sample size of each class
 
 muMin = -5;    % Each mu \in [muMin, muMax]
 muMax = +5;
