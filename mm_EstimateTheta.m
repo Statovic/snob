@@ -226,6 +226,7 @@ for k = wClasses
                 
                 term = sqrt((Nk+2)^2 - 12*rsamp^2*(Nk-1));
                 s2 = Nk*S*(Nk+2+term) / ((Nk+2)*(Nk-1)*2);
+                s2 = max(s2, 1e-3);
                 s = sqrt(s2);
                 rho = (Nk+2-term) / (6*rsamp);
                 Sigma = [s2(1), s(1)*s(2)*rho; s(1)*s(2)*rho, s2(2)];
@@ -280,23 +281,28 @@ for k = wClasses
             % Estimate regression coefficients
             yr = y .* sqrt(r(ix));
             Xr = bsxfun(@times, X, sqrt(r(ix)));
-            b = wridge(X, y, r(ix), 1);
+            b = wridge(X, y, r(ix), 1e-3);
             %b = lscov([ones(length(y),1), X], y, r(ix));
 
             % Estimate tau
             Nk  = sum(r(ix));   
             mu_z = Xr * b(2:end);
-            Kconst = mu_z'*mu_z;
             e2 = sum( (yr - mu_z - sqrt(r(ix))*b(1)).^2 );
-%            e2 = sum( (yr - mu_z - b(1)).^2 );
-            log_kappa_P = -P*log(2) + log(P) + (1-P)*log(pi) + 2*psi(1)-P;
-            logKmult = ( log_kappa_P + P * log(pi * Kconst) - 2*gammaln(P/2 + 1) );    
+
+            % S1 = sum(r .* y.^2 )
+            % S2 = X'*diag(r)*y
+            % S3 = [ones(50,1) X]'*diag(r)*[ones(50,1) X]
+            % e2 = S1 - 2*b'*S2 + b'*S3*b;
+
+%            Kconst = mu_z'*mu_z;
+%            log_kappa_P = -P*log(2) + log(P) + (1-P)*log(pi) + 2*psi(1)-P;
+%            logKmult = ( log_kappa_P + P * log(pi * Kconst) - 2*gammaln(P/2 + 1) );    
             
-            logtau_init = log( max(1e-5, e2 / (Nk - P - 1)) );
+            logtau_init = log( max(1e-2, e2 / (Nk - P - 1)) );
             % uncomment below if actual MML estimate is required
             %logtau = fminunc(@(LOGTAU) linreg_msglentau(Nk, P, e2, logKmult, LOGTAU), logtau_init, opts.SearchOptions);
             logtau = logtau_init;
-            tau = exp(max([logtau, -10]));
+            tau = exp(max([logtau, -3]));
             
             model.theta = [tau; b];
             

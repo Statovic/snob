@@ -565,7 +565,7 @@ switch lower(model_list{i})
         ModelTypes{k}.type = 'linreg';
         ModelTypes{k}.Ivar = TargetIx;
         ModelTypes{k}.CovIx = CovIx;
-        ModelTypes{k}.MinMembers = length(CovIx) + 3;     
+        ModelTypes{k}.MinMembers = length(CovIx)*10;        % min. 10 data points per coefficient 
         ModelTypes{k}.Description = 'Gaussian linear regression';                      
         
         %% Error checking
