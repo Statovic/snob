@@ -17,6 +17,10 @@ for k = wClasses
         
         switch model.type
             
+            %% No model
+            case 'skip'
+            model.theta = [];
+            
             %% Beta distribution
             case 'beta'
             

@@ -6,6 +6,11 @@ for i = 1:length(ModelTypes)
     %% Type of model
     switch ModelTypes{i}.type
 
+        case 'skip'
+            class.model{i}.type  = 'skip';               % type
+            class.model{i}.Ivar  = ModelTypes{i}.Ivar;   % which variable in the data?
+            class.model{i}.theta = [];                   % no parameters
+
         case 'beta'
             class.model{i}.type  = 'beta';               % type
             class.model{i}.Ivar  = ModelTypes{i}.Ivar;   % which variable in the data?

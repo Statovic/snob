@@ -112,6 +112,7 @@
 %                       'sfa'       -> Multivariate normal distribution (single factor analysis)
 %                       'vmf'       -> von Mises-Fisher distribution
 %                       'weibull'   -> Weibull distribution
+%                       'skip'      -> do not model these columns!
 %
 %                Except in the case of censored data, 'linreg' or 'logreg' models, the vector cols denotes which columns the
 %                model applies to. That is, 

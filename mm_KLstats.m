@@ -79,6 +79,9 @@ end
 
 % Compute KL
 switch type
+    case 'skip'
+        kl = nan;
+
     case 'beta'
         a0 = thetaSrc(1); b0 = thetaSrc(2);
         a1 = thetaTgt(1); b1 = thetaTgt(2);

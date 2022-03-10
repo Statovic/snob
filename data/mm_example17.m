@@ -18,7 +18,9 @@ subplot(1,3,3); plot(x, y, 'kx'); xlabel('x'); ylabel('y'); grid;
 hold on;
 
 %% Fit mixture model
-mm = snob([x y], {'norm', 1, 'linreg',[2 1]}, 'k', 2, 'fixedstructure', true);
+%  x ~ Normal(mu_1, sigma_1^2)
+%  y ~ Normal(mu_2, sigma_2^2), mu2 = b0 + b1*x
+mm = snob([x y], {'norm', 1, 'linreg',[2 1]}, 'k', 1);
 mm_Summary(mm);
 
 %% Plot mixture of regressions

@@ -17,6 +17,22 @@ end
 %% Check that model type i was specified correctly
 switch lower(model_list{i})       
     
+    %% SKIP: columns that are not modelled by snob
+    case {'skip'} 
+
+        for j = 1:length(cols)
+            ModelTypes{k}.type = 'skip';
+            ModelTypes{k}.Ivar = cols(j);            
+            ModelTypes{k}.MinMembers = 0;        
+            ModelTypes{k}.Description = 'no model';
+
+            %% Error checking
+            if(VarsUsed(cols(j)))
+                error(['Data column ', int2str(cols(j)), ': multiple models defined']);
+            end 
+            
+        end
+    
     %% Beta distribution
     case {'beta'}
         %% Basic data  
@@ -606,7 +622,7 @@ switch lower(model_list{i})
         ModelTypes{k}.type = 'logreg';
         ModelTypes{k}.Ivar = TargetIx;
         ModelTypes{k}.CovIx = CovIx;
-        ModelTypes{k}.MinMembers = length(CovIx) + 3;    
+        ModelTypes{k}.MinMembers = length(CovIx)*10;    % min. 10 data points per coefficient
         ModelTypes{k}.Description = 'logistic regression';                    
         
         %% Error checking

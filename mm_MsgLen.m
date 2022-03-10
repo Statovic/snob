@@ -146,6 +146,10 @@ for k = 1:K
         model = mm.class{k}.model{i};           % model                
         switch model.type
 
+            %% no model
+            case 'skip'
+                AssLen = 0;
+            
             %% beta distribution
             case 'beta'
                 nParams = 2;

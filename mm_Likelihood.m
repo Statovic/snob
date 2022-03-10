@@ -19,6 +19,10 @@ for k = 1:K
         
         switch m.type            
             
+            %% no model
+            case 'skip'
+                subL(I) = 0;
+            
             %% beta distribution
             case 'beta'
                 ap = m.theta(1);

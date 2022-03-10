@@ -37,6 +37,11 @@ for k = 1:nClasses
         Ivar  = mm.class{k}.model{i}.Ivar;
         switch model.type
             
+            %% skip
+            case 'skip'
+                fprintf('%20s', 'No model');
+                fprintf('%10s\n', mm.opts.VarNames{Ivar(1)});                    
+
             %% von Mises-Fisher distribution
             case 'vmf'
                 fprintf('%20s', 'von Mises-Fisher');

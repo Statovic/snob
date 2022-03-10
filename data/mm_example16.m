@@ -2,7 +2,7 @@
 clear;
 
 %% Generate data
-N = 1e4;    % number of data points
+N = 1e2;    % number of data points
 K = 3;      % number of classes
 w = [0.2, 0.5, 0.3]; % mixing proportions
 w = w ./ sum(w);     % make sure these sum up to 1
