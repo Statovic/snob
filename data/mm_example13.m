@@ -30,3 +30,4 @@ end
 %% Mixture model
 mm = snob(data, {'sfa',1:D}, 'k', 3);
 mm_Summary(mm);
+mm_KLstats(mm,data);

@@ -21,7 +21,7 @@ VarNames = {'SEX', 'AGE', 'BMI', 'BP', 'S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'DIAB
 mm = snob(data, {'multi',1,'mvg',2:4,'mvg',5:10,'linreg',[11,1:p]},'k',4,'varnames', VarNames);
 
 % Print a summary of all the model parameters.
-% There are two classes. The total message length is ~14,876 nits.
+% There are two classes. The total message length is ~14,867 nits.
 mm_Summary(mm);
 
 % Now, suppose we model AGE,BMI and BP as uncorrelated [spherical Gaussian]

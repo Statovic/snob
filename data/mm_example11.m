@@ -29,6 +29,7 @@ mm = snob(data, {'cfixexp', [1,2]}, 'k', 1);
 
 %% Lets look at the model snob discovered
 mm_Summary(mm);
+mm_KLstats(mm,data);
 
 %% Plot the survival function
 minX = 0;    % range of values for plotting
@@ -67,12 +68,13 @@ delta2 = (T <= C)*1;
 data = [[y1;y2], [delta1;delta2] ];
 
 %% Run snob 
-% We specify that we are dealing with censored exponential data.
+% We specify that we are dealing with censored Weibull data.
 % and start the search with k=1 classes.
 mm = snob(data, {'cfixweibull', [1,2]}, 'k', 3);
 
 %% Lets look at the model snob discovered
 mm_Summary(mm);
+mm_KLstats(mm,data);
 
 %% Plot the survival function
 minX = 0;    % range of values for plotting

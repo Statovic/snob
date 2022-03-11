@@ -247,6 +247,7 @@ for k = wClasses
             % Estimate parameters
             Nk  = sum(r(ix));                   % n            
             lambda = (sqrt(s^2 + 2*s*(Nk-1) + (Nk+1)^2) + s - Nk - 1) / 2 / Nk;
+            lambda = max(1e-3, lambda); % make sure lambda > 0
             
             model.theta = lambda;
             

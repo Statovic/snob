@@ -221,7 +221,7 @@
 function mm = snob(data, model_list, varargin)
 
 %% Version number
-VERSION = '0.60';
+VERSION = '0.65';
 
 %% Parse options
 inParser = inputParser;  

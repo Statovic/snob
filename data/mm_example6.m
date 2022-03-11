@@ -25,5 +25,5 @@ for i = 1:mm.nClasses
 end
 r = mm_EstimateR(mm, [x,nan(n,1)]);
 ypred = sum( ypred .* r, 2);
-plot(x,ypred,'r.')
+plot(x,ypred,'r-','LineWidth',1.5);
 

@@ -38,6 +38,7 @@ x = linspace(1,350,N)';
 mu = zeros(N, mm.nClasses);
 res = zeros(n, mm.nClasses);
 fit = zeros(n, mm.nClasses);
+nc = mm.Nk;
 for k = 1:mm.nClasses
     m = mm.class{k}.model{end};
     b0  = m.theta(2);
@@ -46,7 +47,11 @@ for k = 1:mm.nClasses
     fit(:,k) = b0 + NumAphids*b;
     res(:,k) = (NumInfected - fit(:,k));
 end
-plot(x, mu, '--', 'LineWidth', 1, 'Color','b');
+colororder([0.9 0.2 0.2; 0.2 0.2 1]);
+plot(x, mu, '--', 'LineWidth', 1);
+legend('Data',['Class 1 (N=',num2str(nc(1),2),')'], ...
+    ['Class 1 (N=',num2str(nc(2),2),')'], ...
+    'Location','Northwest');
 hold off;
 
 % Determine size of each plot point
@@ -69,6 +74,3 @@ xlabel('Fitted values');
 ylabel('Residuals');
 grid on; box on;
 set(gcf,'color','w');
-
-
-
