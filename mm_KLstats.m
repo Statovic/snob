@@ -88,6 +88,13 @@ switch type
 
         kl = betaln(a1,b1)-betaln(a0,b0) + (a0-a1)*psi(a0) + (b0-b1)*psi(b0) + (a1-a0+b1-b0)*psi(a0+b0);
 
+    case 'crndexp'
+        a1 = thetaSrc(1); b1 = thetaSrc(2);
+        a2 = thetaTgt(1); b2 = thetaTgt(2);
+
+        kl = a1*b1*(a2+b2) + a2*b2*(a1*log(b2/b1) + b1*log(a2/a1)- a1 - b1);
+        kl = kl / (a2*b2*(a1+b1));
+
     case 'cfixexp'
         c = mm.ModelTypes{attr}.c;
         alpha = thetaSrc; beta = thetaTgt;
