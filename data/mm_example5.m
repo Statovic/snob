@@ -5,7 +5,7 @@ clear;
 % The data consists of 10 predictors (X = SEX, AGE, BMI, BP and six blood serum measurements S1, S2, S3, S4, S5, S6) of diabetes (Y). 
 load data/diabetes;
 X = [SEX, AGE, BMI, BP, S1, S2, S3, S4, S5, S6];
-[~,p] = size(X);
+[n,p] = size(X);
 data = [X, Y];
 
 % Run Snob with the following options: 
@@ -34,3 +34,25 @@ mm_Summary(mm2);
 % The uncorrelated model is 
 exp( -(mm2.msglen - mm.msglen) )
 % times more likely a posteriori than the MVG model.
+
+% Show fitted values vs residuals
+res = zeros(n, mm2.nClasses);
+fit = zeros(n, mm2.nClasses);
+nc = mm.Nk;
+scale = mm2.r;
+for k = 1:mm2.nClasses
+    m = mm2.class{k}.model{end};
+    b0  = m.theta(2);
+    b   = m.theta(3:end);
+    fit(:,k) = b0 + X*b;
+    res(:,k) = (Y - fit(:,k));
+end
+
+figure;
+scatter(fit, res, scale*5, 'k', 'filled');
+%xlim([0 27]); ylim([-8 24]); 
+grid;
+xlabel('Fitted values');
+ylabel('Residuals');
+grid on; box on;
+set(gcf,'color','w');

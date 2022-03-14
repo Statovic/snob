@@ -31,7 +31,9 @@ kappa_k = [1 / 12               % k = 1
     ];
 
 % WF87 constant
-if(k <= 10)
+if(k <= 0)
+    f = 0;  
+elseif(k <= 10)
     f = (k/2)*(log(kappa_k(k)) + 1);
 else
     f = -k*log(2*pi)/2 + log(k*pi)/2 + psi(1);

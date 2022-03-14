@@ -236,7 +236,6 @@ defaultGreedy    = false;
 defaultFixedStructure = false;
 defaultMaxTryCombine  = 10;
 defaultStartModel     = [];
-defaultNoCost         = []; % TODO: add option to avoid costing specified columns
 defaultMaxK           = inf;
 defaultVarNames = {};
 
@@ -255,7 +254,6 @@ addParameter(inParser, 'fixedstructure', defaultFixedStructure, @islogical);
 addParameter(inParser, 'greedy', defaultGreedy, @islogical);
 addParameter(inParser, 'maxtrycombine',  defaultMaxTryCombine, @(x) isnumeric(x) && isscalar(x) && (x > 0));
 addParameter(inParser, 'startmodel', defaultStartModel, @isstruct);
-addParameter(inParser, 'nocost', defaultNoCost, @(x) isnumeric(x));
 addParameter(inParser, 'maxk', defaultMaxK, @(x) isnumeric(x) && isscalar(x) && (x > 0));
 addParameter(inParser, 'varnames', defaultVarNames, @iscell);
 
@@ -266,7 +264,7 @@ parse(inParser, model_list, varargin{:});
 models    = inParser.Results.model_list;  % list of models
 mm        = inParser.Results.startmodel;  % did we get passed a model?
 
-opts = struct;                                      % hold all options here
+opts = struct;                                      % store all options here
 opts.nClasses       = inParser.Results.k;           % starting number of classes [default k=1]
 opts.maxk           = inParser.Results.maxk;        % maximum number of classes [default kmax=inf]
 opts.Initialisation = inParser.Results.init;        % initialisation strategy [default 'kmeans++']
@@ -279,7 +277,6 @@ opts.ModelList      = model_list;
                                                     % if false, pick model stochastically [default]
 opts.MaxTryCombines = inParser.Results.maxtrycombine;
 opts.SearchOptions  = optimoptions('fminunc','display','off');
-opts.NoCost         = inParser.Results.nocost;
 opts.VarNames       = upper(inParser.Results.varnames);
 
 
