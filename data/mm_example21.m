@@ -27,7 +27,7 @@ mm_PlotModel1d(mm, x, 1);
 
 % Plot the CDF of the fitted mixture model 
 minX = 0;    % range of values for plotting
-maxX = 1;
+maxX = 16;
 nPts = 1e3;
 x = linspace(minX, maxX, nPts)';
 y = zeros(nPts, 1);
@@ -35,9 +35,10 @@ y = zeros(nPts, 1);
 for k = 1:mm.nClasses
     prop = mm.a(k); % mixing proportion
     theta = mm.class{k}.model{1}.theta; % parameters for class k
-    a = theta(1);  % mean and std. deviation
-    b = theta(2);
-    y = y + (prop * betacdf(x,a,b));   % CDF
+    mu = theta(1);  % a = shape, b = scale
+    phi = theta(2);
+    a = phi; b = mu / phi;
+    y = y + (prop * gamcdf(x,a,b));   % CDF
 end
 
 figure;
