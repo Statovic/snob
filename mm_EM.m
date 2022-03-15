@@ -9,9 +9,9 @@ while not(done)
     
     %% Collapse mixtures if required ...
     if(min(mm.Nk) < mm.MinMembers)             
-        mm = mm_Collapse(mm, mm.Nk < mm.MinMembers);
-        if(mm.opts.display)
-            fprintf('             Removing %d class(es) due to insufficient membership...\n', sum(mm.Nk < mm.MinMembers));
+        [mm, removed] = mm_Collapse(mm, mm.Nk < mm.MinMembers);
+        if(mm.opts.display && removed > 0)
+            fprintf('             Removing %d class(es) due to insufficient membership...\n', removed);
         end           
     end
     
@@ -35,6 +35,8 @@ while not(done)
 
         % next iteration
         iter = iter + 1;
+    elseif(iter == 1) % iteration 1 and we dont have enough data ...
+        error('Sample size too small to fit mixture model');
     end
     
 end

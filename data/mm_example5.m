@@ -50,7 +50,6 @@ end
 
 figure;
 scatter(fit, res, scale*5, 'k', 'filled');
-%xlim([0 27]); ylim([-8 24]); 
 grid;
 xlabel('Fitted values');
 ylabel('Residuals');
