@@ -35,9 +35,8 @@ y = zeros(nPts, 1);
 for k = 1:mm.nClasses
     prop = mm.a(k); % mixing proportion
     theta = mm.class{k}.model{1}.theta; % parameters for class k
-    mu = theta(1);  % a = shape, b = scale
-    phi = theta(2);
-    a = phi; b = mu / phi;
+    mu = theta(1);  phi = theta(2);
+    a = phi; b = mu / phi; % a = shape, b = scale
     y = y + (prop * gamcdf(x,a,b));   % CDF
 end
 

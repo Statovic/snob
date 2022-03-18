@@ -65,7 +65,7 @@ if(~strcmp(mm.ModelTypes{wModel}.type,'linreg') && ~strcmp(mm.ModelTypes{wModel}
     end
 
     % Then, plot complete mixture PDF
-    mm_pdf = real(mm_PDF(mm, y));
+    mm_pdf = real(mm_PDF(mm, y, wModel));
     plot(y, mm_pdf);
 
     %% Finally, add the legend
@@ -108,6 +108,10 @@ elseif(strcmp(mm.ModelTypes{wModel}.type,'mvg'))
     zlabel('Probability Density','Fontsize',18);    
 
 elseif(strcmp(mm.ModelTypes{wModel}.type,'multi'))
+    probs = zeros(mm.ModelTypes{wModel}.nStates, K);
+    for k = 1:K
+        probs(:,k) = mm.class{k}.model{wModel}.theta;
+    end   
     if(mm.nClasses > 2)
         bar(probs', 0.7, 'grouped', 'FaceColor', [0.65 0.65 0.65]);    
     else

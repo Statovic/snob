@@ -18,7 +18,7 @@ while not(done)
     %% Estimate class proportions
     [mm.a, mm.r, mm.Nk, ~] = mm_EstimateMixingWeights(mm, data);
         
-    if(min(mm.Nk) >= mm.MinMembers)
+    if(min(mm.Nk) >= mm.MinMembers || mm.nClasses == 1) % enough data to fit MM?
         %% Estimate models parameters
         mm = mm_EstimateTheta(mm, data, 1:mm.nClasses);
 
@@ -35,8 +35,6 @@ while not(done)
 
         % next iteration
         iter = iter + 1;
-    elseif(iter == 1) % iteration 1 and we dont have enough data ...
-        error('Sample size too small to fit mixture model');
     end
     
 end

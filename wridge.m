@@ -1,5 +1,7 @@
 function b = wridge(X, y, w, lambda)
 
+w = max(1e-10, w);    % numerical issues?
+
 %% weighted ridge regression
 %% see https://www.nber.org/papers/w0011
 n = sum(w);
