@@ -309,6 +309,39 @@ switch lower(model_list{i})
             error('vMF data must be specified in Euclidean coordinates with each coordinate x_i on the unit sphere (||x_i|| = 1)');
         end
         
+    %% Dirichlet distribution
+    case {'dirichlet'}
+        ModelTypes{k}.type = 'dirichlet';
+        ModelTypes{k}.Ivar = cols;
+        ModelTypes{k}.Description = 'Dirichlet distribution';         
+
+        %% Error checking
+        CovIx = ModelTypes{k}.Ivar;
+        if(length(CovIx) < 2)
+            error('Dirichlet distribution must use at least two data columns');
+        end
+        if(any(VarsUsed(CovIx)))
+            error('Cannot use multiple models for the same data column');
+        end
+
+        d = length(CovIx);
+        ModelTypes{k}.nDim = d;
+        % Ensure at least 3 data points per parameter 
+        ModelTypes{k}.MinMembers = d*3;
+        
+        ix = ~any(isnan(data(:,CovIx)),2);
+        y = data(ix, CovIx);      
+
+        if(any(std(y) == 0))
+            error('Data column(s) have zero variance');
+        end            
+        if(min(y(:) < 0) || max(y(:)) > 1)
+            error('Each data point must be in (0,1)');
+        end        
+        if(max(abs(1 - sum(y,2))) > eps)
+            error(['Column-wise sum must be 1 for all data points']);
+        end          
+        
     %% Multivariate Gaussian distribution
     case {'mvg','mvn'}
         ModelTypes{k}.type = 'mvg';
@@ -334,6 +367,9 @@ switch lower(model_list{i})
         ModelTypes{k}.mu0 = min(y);
         ModelTypes{k}.mu1 = max(y);   
 
+        if(any(std(y) == 0))
+            error('Data column(s) have zero variance');
+        end            
         
     %% Negative binomial distribution
     case {'negb','nbin'}

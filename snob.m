@@ -78,13 +78,17 @@
 %                                   {v_n, {r_nk, k=1,...,K},n=1,...,N} ~ N(0,1)
 %   (.)    Beta distribution ('beta')
 %               p(X|a,b) = x^(a-1) (1-x)^(b-1) / Beta(a,b)
-% 
+%                                   X \in (0,1), a>0,b>0
+%   (.)    Dirichlet distribution ('dirichlet')
+%               p(Y|theta)       = 1/B(theta) Prod_i y_i^(theta_i - 1)
+%                                   Y_i \in (0,1), Sum_i Y_i = 1
+%                                   theta_i > 0
 %   (.)    Gaussian linear regression ('linreg')
 %               p(Y|X,theta)     = Gaussian(b0 + x'*b, sigma^2)
 %                                   Y \in R, b0 \in R, b \ in R^d, sigma>0
 %   (.)    Logistic regression ('logreg')
 %               p(Y==1|X,theta)  = logit(b0 + x'*b)
-%                                   Y \in {0,1}, b0 \in R, b \ in R^d              
+%                                   Y \in {0,1}, b0 \in R, b \ in R^d  
 %
 %  The input arguments to SNOB() are:
 %   
@@ -97,6 +101,7 @@
 %                       'exp'       -> Exponential distribution
 %                       'crndexp'   -> Exponential distribution with random type I censoring
 %                       'cfixexp'   -> Exponential distribution with fixed type I censoring
+%                       'dirichlet' -> Dirichlet distribution
 %                       'gamma'     -> Univariate gamma distribution
 %                       'geometric' -> Geometric distribution
 %                       'igauss'    -> Inverse Gaussian distribution
@@ -168,6 +173,7 @@
 %  How to interpret the parameter field "theta":
 %  'beta'        - [a, b] 
 %  'exp'         - lambda 
+%  'dirichlet'   - theta
 %  'gamma'       - [mu, phi]
 %                  Parametarization (alpha/shape,beta/rate):
 %                      alpha = phi, beta = phi / mu

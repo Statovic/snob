@@ -46,6 +46,14 @@ for k = wClasses
             case 'weibull'
             theta = fminunc(@(X) weibull_msglen(y(ix), r(ix), X(1), X(2)), [log(mean(y(ix))), 0], mm.opts.SearchOptions);
             model.theta = max(1e-2, exp(theta(:)));
+
+            %% Dirichlet distribution
+            case 'dirichlet'
+            ix  = ~any(isnan(y),2);  
+
+            d = length(model.theta);
+            theta = fminunc(@(X) dir_msglen(log(y(ix,:)), r(ix), X), zeros(1,d), mm.opts.SearchOptions);
+            model.theta = exp(theta(:));            
             
             %% Univariate Weibull distribution with fixed type I censoring
             case 'cfixweibull'
@@ -401,6 +409,25 @@ f = F + h + r'*L;
 
 end
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function f = dir_msglen(logx, r, logparams)
+
+params = exp(logparams);
+a0 = sum(params);
+g = psi(1,a0);
+T = psi(1,params);
+
+% assertion
+h = sum(log1p(params.*params));
+F = 0.5*sum(log(T)) + 0.5*log1p(-g*sum(1./T));
+
+% detail
+L = -gammaln(sum(params)) + sum(gammaln(params)) - sum(bsxfun(@times, logx, (params-1)), 2);
+
+% codelength
+f = F + h + r'*L;
+
+end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function msglen = cfixweibull_msglen(y, delta, c, r, log_lambda, log_k)

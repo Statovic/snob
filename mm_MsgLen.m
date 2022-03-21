@@ -341,6 +341,20 @@ for k = 1:K
                 totalParams = totalParams + nParams;                
                 AssLen = h_theta + F_theta;                
                 
+            %% Dirichlet distribution
+            case 'dirichlet'
+                d = mm.ModelTypes{i}.nDim;
+                nParams = d;
+                totalParams = totalParams + nParams;
+
+                theta = model.theta;
+                g = psi(1,sum(theta));
+                T = psi(1,theta);                
+                h_theta = -d*log(2) + d*log(pi) + sum(log1p(theta.*theta));
+                F_theta = d/2*log(Nk(k)) + 0.5*sum(log(T)) + 0.5*log1p(-g*sum(1./T));
+
+                AssLen = h_theta + F_theta;        
+
             %% Multivariate Gaussian model
             case 'mvg'                
                 d = mm.ModelTypes{i}.nDim;
@@ -416,7 +430,7 @@ for k = 1:K
                 h_theta = -2*log(2) + 2*log(pi) + log1p(phi^2) + log1p(mu^2);
                 numerator = mu + phi*(mu + phi) * psi(1,phi)*((phi/(mu+phi))^phi - 1);
                 F_theta = log(Nk(k)) - log(mu)/2 - log(mu+phi) + log(-numerator)/2;                
-                AssLen = h_theta + F_theta;                
+                AssLen = h_theta + F_theta;                                
                 
             %% geometric model
             case 'geometric'

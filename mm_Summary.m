@@ -42,6 +42,24 @@ for k = 1:nClasses
                 fprintf('%20s', 'No model');
                 fprintf('%10s\n', mm.opts.VarNames{Ivar(1)});                    
 
+            %% Dirichlet distribution
+            case 'dirichlet'
+                fprintf('%20s', 'Dirichlet');
+                fprintf('%10s ', mm.opts.VarNames{Ivar(1)});                
+                d = length(theta);
+                for j = 2:d
+                    fprintf('%s ', mm.opts.VarNames{Ivar(j)});                
+                end
+                fprintf('\n');                
+                fprintf('%43s = [', 'theta');     
+                for j = 1:d
+                    fprintf('%4.2f', theta(j));
+                    if(j ~= length(theta))
+                        fprintf(' ');
+                    end
+                end
+                fprintf(']\n');                
+                
             %% von Mises-Fisher distribution
             case 'vmf'
                 fprintf('%20s', 'von Mises-Fisher');

@@ -28,6 +28,15 @@ for i = 1:length(ModelTypes)
             class.model{i}.v     = 0;
             class.model{i}.collapsed = true;
         
+        case 'dirichlet'
+            d = ModelTypes{i}.nDim;
+
+            theta = rand(d,1);
+
+            class.model{i}.type  = 'dirichlet';          % type
+            class.model{i}.Ivar  = ModelTypes{i}.Ivar;   % which variable in the data?
+            class.model{i}.theta = theta;              
+
         case 'mvg'
             d = ModelTypes{i}.nDim;
             mu = randn(d,1);

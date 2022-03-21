@@ -29,7 +29,18 @@ for i = 1:nModels
             end
             
             % Model types
-            switch model.type                         
+            switch model.type 
+
+            case 'dirichlet'   
+                str = sprintf('[');
+                for j = 1:length(theta)
+                    str = [str, sprintf('%4.2f', theta(j))];
+                    if(j ~= length(theta))
+                        str = [str,' '];
+                    end
+                end
+                str = [str,']']; 
+                mdlType = 'Dirichlet';
             case 'beta'
                 str = sprintf('[%.2f %.2f]', theta(1),theta(2));                     
                 mdlType = 'Beta';
@@ -106,6 +117,8 @@ for i = 1:nModels
         end
   
         switch model.type
+            case 'dirichlet'
+                str = 'theta';
             case 'beta'
                 str = '[a, b]';
             case 'multi'

@@ -133,11 +133,17 @@ for k = 1:K
                 w = x0 - bsxfun(@times,vrep,a_sfa');
                 e2 = sum(bsxfun(@rdivide, w.^2, sigma.^2'),2);
                 subL(I) = (d/2)*log(2*pi) + sum(log(sigma)) + e2/2;
-                
-                
+                                
+
+            %% Dirichlet distribution
+            case 'dirichlet'
+                theta = m.theta;
+
+                subL(I) = -gammaln(sum(theta)) + sum(gammaln(theta)) - sum(bsxfun(@times, log(Y(I,m.Ivar)), (theta-1)'), 2);
+
             %% Multivariate Gaussian model
             case 'mvg'
-                
+
                 % Parameters
                 d = mm.ModelTypes{i}.nDim;
                 theta = m.theta;
