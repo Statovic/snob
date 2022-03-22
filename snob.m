@@ -14,7 +14,7 @@
 %   automatically try to discover this information. Currently, SNOB
 %   supports mixtures of the following distributions: 
 %
-%   (.)    Univariate Gaussian distribution ('norm')
+%   (.)    Gaussian distribution ('norm')
 %               p(X|mu, sigma^2) = (1/sqrt(2*pi*sigma^2)) * exp(-(x-mu)/2/sigma^2),
 %                                   X \in R, mu \in R, sigma > 0
 %   (.)    Multivariate Gaussian distribution ('mvg')
@@ -227,7 +227,7 @@
 function mm = snob(data, model_list, varargin)
 
 %% Version number
-VERSION = '0.65';
+VERSION = '0.70';
 
 %% Parse options
 inParser = inputParser;  
@@ -356,7 +356,7 @@ end
 if(opts.display)
     maxlen = 0;
     fprintf('%s\n', repchar('=', maxlen + 85));
-    fprintf('|%s|\n', centrestr(sprintf('MML mixture modelling ver. %s', VERSION), maxlen + 83));
+    fprintf('|%s|\n', centrestr(sprintf('MML mixture modelling ver. %s', VERSION), maxlen+83));
     fprintf('|%s|\n', centrestr(sprintf('(c) Enes Makalic, Daniel F Schmidt. 2019-'), maxlen+83));
     fprintf('%s\n', repchar('=', maxlen + 85));    
 end

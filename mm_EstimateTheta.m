@@ -241,6 +241,8 @@ for k = wClasses
                 s2 = max(s2, 1e-3);
                 s = sqrt(s2);
                 rho = (Nk+2-term) / (6*rsamp);
+                rho = min(rho, 1-1e-6); % Ensure rho is never +/-1
+                rho = max(rho, -1+1e-6);
                 Sigma = [s2(1), s(1)*s(2)*rho; s(1)*s(2)*rho, s2(2)];
             end
             
