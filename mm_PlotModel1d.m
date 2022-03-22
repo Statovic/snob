@@ -29,7 +29,7 @@ K = mm.nClasses;
 min_val = min(blims);
 max_val = max(blims);
 
-switch mm.ModelTypes{wModel}.type
+switch mm.ModelTypes{wModel}.type       
     case 'beta'
         min_val = 0; 
         max_val = 1;        
@@ -46,6 +46,22 @@ switch mm.ModelTypes{wModel}.type
         min_val = max(min_val, 1e-3);         
     case 'negb'
         min_val = max(min_val, 1e-3);         
+
+    case 'mvg'
+        if(mm.ModelTypes{wModel}.nDim > 2)
+            error('Can only plot 2D Gaussians');
+        end
+        min_mvg = [inf, inf];
+        max_mvg = [-inf, -inf];
+        for k = 1:K
+            d = mm.ModelTypes{wModel}.nDim;
+            theta = mm.class{k}.model{wModel}.theta;
+            mu_mvg = theta(1:d);
+            Sigma_mvg = reshape(theta(d+1:end),d,d);   
+
+            min_mvg = min(min_mvg, mu_mvg' - 3*sqrt(Sigma_mvg(1:3:4)));
+            max_mvg = max(max_mvg, mu_mvg' + 3*sqrt(Sigma_mvg(1:3:4)));
+        end       
 end
 
 %% Plot data 
