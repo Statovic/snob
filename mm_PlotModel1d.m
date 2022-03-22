@@ -46,7 +46,6 @@ switch mm.ModelTypes{wModel}.type
         min_val = max(min_val, 1e-3);         
     case 'negb'
         min_val = max(min_val, 1e-3);         
-
     case 'mvg'
         if(mm.ModelTypes{wModel}.nDim > 2)
             error('Can only plot 2D Gaussians');

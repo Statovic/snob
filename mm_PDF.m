@@ -31,6 +31,11 @@ for k = wClass
         I = ~any(isnan( Y(:,m.Ivar) ), 2);
         
         switch m.type            
+
+            %% Dirichlet distribution
+            case 'dirichlet'
+                theta = m.theta;
+                subL(I) = -gammaln(sum(theta)) + sum(gammaln(theta)) - sum(bsxfun(@times, log(Y(I,m.Ivar)), (theta-1)'), 2);                
             
             %% Beta
             case 'beta'
