@@ -59,6 +59,31 @@ switch lower(model_list{i})
             k = k + 1;
         end      
     
+    %% Pareto Type II distribution
+    case {'pareto2'}
+        for j = 1:length(cols)
+            ModelTypes{k}.type = 'pareto2';
+            ModelTypes{k}.Ivar = cols(j);            
+            ModelTypes{k}.MinMembers = 5;       
+            ModelTypes{k}.Description = 'Pareto distribution (Type II)';                    
+            
+            %% Error checking
+            if(VarsUsed(cols(j)))
+                error(['Data column ', int2str(cols(j)), ': multiple models defined']);
+            end               
+            
+            ix = ~isnan(data(:,ModelTypes{k}.Ivar));     
+            y = data(ix,ModelTypes{k}.Ivar);
+            if(min(y) < 0)
+                error(['Data column ', int2str(cols(j)), ': data cannot be negative']);
+            end 
+            if(std(y) == 0)
+                error(['Data column ', int2str(cols(j)), ': zero variance']);
+            end  
+            
+            k = k + 1;
+        end           
+        
     %% Univariate exponential distribution with random Type I censoring    
     case {'crndexp'}
         ModelTypes{k}.type = 'crndexp';

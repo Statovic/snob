@@ -44,6 +44,9 @@ for i = 1:nModels
             case 'beta'
                 str = sprintf('[%.2f %.2f]', theta(1),theta(2));                     
                 mdlType = 'Beta';
+                case 'pareto2'
+                str = sprintf('[%.2f %.2f]', theta(1),theta(2));                     
+                mdlType = 'Pareto II';                
             case 'Gaussian'    
                 str = sprintf('[%.2f %.2f]', theta(1),sqrt(theta(2)));                
                 mdlType = 'Gaussian';
@@ -121,6 +124,8 @@ for i = 1:nModels
                 str = 'theta';
             case 'beta'
                 str = '[a, b]';
+            case 'pareto2'
+                str = '[sigma, alpha]';                
             case 'multi'
                 str = '[proportions]';
             case 'Gaussian'

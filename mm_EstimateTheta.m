@@ -47,14 +47,19 @@ for k = wClasses
             theta = fminunc(@(X) weibull_msglen(y(ix), r(ix), X(1), X(2)), [log(mean(y(ix))), 0], mm.opts.SearchOptions);
             model.theta = max(1e-2, exp(theta(:)));
 
+            %% Pareto Type II
+            case 'pareto2'
+            theta = fminunc(@(X) pareto2_msglen(y(ix), r(ix), X(1), X(2)), [0, 0], mm.opts.SearchOptions);
+            model.theta = max(1e-2, exp(theta(:)));       
+
             %% Dirichlet distribution
             case 'dirichlet'
             ix  = ~any(isnan(y),2);  
 
             d = length(model.theta);
             theta = fminunc(@(X) dir_msglen(log(y(ix,:)), r(ix), X), zeros(1,d), mm.opts.SearchOptions);
-            model.theta = exp(theta(:));            
-            
+            model.theta = exp(theta(:)); 
+                           
             %% Univariate Weibull distribution with fixed type I censoring
             case 'cfixweibull'
             c = mm.ModelTypes{i}.c;
@@ -410,6 +415,22 @@ L = -((k-1).*logz + log(k./lambda)) + z2B;
 f = F + h + r'*L;
 
 end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function f = pareto2_msglen(x, r, logsigma, logalpha)
+
+sigma = exp(logsigma);
+alpha = exp(logalpha);
+
+h = log1p(sigma*sigma) + log1p(alpha*alpha);
+F = -0.5*(logalpha + 2*log1p(alpha) + log(2+alpha) + 2*logsigma);
+
+L = -logalpha + logsigma + (alpha+1)*log1p(x./sigma);
+
+f = F + h + r'*L;
+
+end
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function f = dir_msglen(logx, r, logparams)

@@ -82,6 +82,15 @@ switch type
     case 'skip'
         kl = nan;
 
+    case 'pareto2'
+        s0 = thetaSrc(1); a0 = thetaSrc(2);
+        s1 = thetaTgt(1); a1 = thetaTgt(2);
+
+        kl = log((a0*s1)/(a1*s0)) - 1 - 1/a0;
+        kl = kl + hypergeom([1 1], 2-a0, s0/s1)*s0*(1+a1) / (s1*(a0-1));
+        kl = kl + pi*csc(pi*a0)*(1+a1)*(s1/s0-1)^(-a0);
+        kl = real(kl);
+    
     case 'dirichlet'
         a = thetaSrc(:)'; b = thetaTgt(:)';
         kl = gammaln(sum(a,2)) - gammaln(sum(b,2)) + sum(gammaln(b) - gammaln(a),2);

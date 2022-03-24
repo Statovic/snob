@@ -134,7 +134,13 @@ for k = 1:K
                 e2 = sum(bsxfun(@rdivide, w.^2, sigma.^2'),2);
                 subL(I) = (d/2)*log(2*pi) + sum(log(sigma)) + e2/2;
                                 
+            %% Pareto distribution (Type II)
+            case 'pareto2'
+                sigma = m.theta(1);
+                alpha = m.theta(2);
 
+                subL(I) = -log(alpha) + log(sigma) + (alpha+1)*log1p(Y(I,m.Ivar)./sigma);
+                
             %% Dirichlet distribution
             case 'dirichlet'
                 theta = m.theta;

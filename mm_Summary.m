@@ -297,6 +297,12 @@ for k = 1:nClasses
                 fprintf('%43s = %7.2f', 'p',theta(1));                
             
             %% Inverse Gaussian    
+            case 'pareto2'
+                fprintf('%20s', 'Pareto (II)');
+                fprintf('%10s\n', mm.opts.VarNames{Ivar(1)});  
+                fprintf('%43s = %7.2f%10s = %7.2f', 'sigma',theta(1),'alpha',theta(2));            
+                
+            %% Inverse Gaussian    
             case 'invGaussian'
                 fprintf('%20s', 'Inv-Gaussian');
                 fprintf('%10s\n', mm.opts.VarNames{Ivar(1)});  

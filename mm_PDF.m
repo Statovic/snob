@@ -32,6 +32,13 @@ for k = wClass
         
         switch m.type            
 
+            %% Pareto Type II
+            case 'pareto2'
+                sigma = m.theta(1);
+                alpha = m.theta(2);
+
+                subL(I) = -log(alpha) + log(sigma) + (alpha+1)*log1p(Y(I,m.Ivar)./sigma);
+            
             %% Dirichlet distribution
             case 'dirichlet'
                 theta = m.theta;

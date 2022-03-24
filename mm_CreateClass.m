@@ -11,6 +11,13 @@ for i = 1:length(ModelTypes)
             class.model{i}.Ivar  = ModelTypes{i}.Ivar;   % which variable in the data?
             class.model{i}.theta = [];                   % no parameters
 
+        case 'pareto2'
+            theta = rand(2,1);
+
+            class.model{i}.type  = 'pareto2';            % type
+            class.model{i}.Ivar  = ModelTypes{i}.Ivar;   % which variable in the data?
+            class.model{i}.theta = theta;                % [sigma alpha]
+
         case 'beta'
             class.model{i}.type  = 'beta';               % type
             class.model{i}.Ivar  = ModelTypes{i}.Ivar;   % which variable in the data?

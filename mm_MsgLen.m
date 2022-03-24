@@ -432,6 +432,18 @@ for k = 1:K
                 F_theta = log(Nk(k)) - log(mu)/2 - log(mu+phi) + log(-numerator)/2;                
                 AssLen = h_theta + F_theta;                                
                 
+            %% Pareto (Type II)
+            case 'pareto2'
+                nParams = 2;
+                totalParams = totalParams + nParams;
+                
+                theta = model.theta;
+                sigma = theta(1);
+                alpha = theta(2);
+                h_theta = -2*log(2) + 2*log(pi) + sum(log1p(theta.*theta));
+                F_theta = log(Nk(k)) - 0.5*(log(alpha) + 2*log1p(alpha) + log(2+alpha) + 2*log(sigma));
+                AssLen = h_theta + F_theta;                
+                
             %% geometric model
             case 'geometric'
                 nParams = 1;

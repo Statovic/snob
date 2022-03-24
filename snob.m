@@ -81,8 +81,11 @@
 %                                   X \in (0,1), a>0,b>0
 %   (.)    Dirichlet distribution ('dirichlet')
 %               p(Y|theta)       = 1/B(theta) Prod_i y_i^(theta_i - 1)
-%                                   Y_i \in (0,1), Sum_i Y_i = 1
+%                                  Y_i \in (0,1), Sum_i Y_i = 1
 %                                   theta_i > 0
+%   (.)    Pareto distribution Type II ('pareto2')
+%               p(Y|sigma,alpha) = alpha sigma^alpha (x + sigma)^(-1-alpha)
+%                                  Y > 0, sigma > 0, alpha > 0
 %   (.)    Gaussian linear regression ('linreg')
 %               p(Y|X,theta)     = Gaussian(b0 + x'*b, sigma^2)
 %                                   Y \in R, b0 \in R, b \ in R^d, sigma>0
@@ -113,6 +116,7 @@
 %                       'mvg'       -> Multivariate normal distribution 
 %                       'negb'      -> Negative binomial distribution
 %                       'norm'      -> Univariate normal distribution
+%                       'pareto2'   -> Pareto distribution (Type II)
 %                       'poisson'   -> Poisson distribution
 %                       'sfa'       -> Multivariate normal distribution (single factor analysis)
 %                       'vmf'       -> von Mises-Fisher distribution
@@ -189,6 +193,7 @@
 %  'multi'       - [p0,p1,...] s.t. p0+p1+...=1
 %  'mvg'         - [mu', Sigma(:)']
 %  'negb'        - [mu, phi] where r = phi, p = 1-mu/(mu+phi)
+%  'pareto2'     - [sigma, alpha]
 %  'poisson'     - lambda
 %  'sfa'         - [mu', sigma', a']
 %  'weibull'     - [lambda,k]
