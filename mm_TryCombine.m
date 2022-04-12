@@ -20,14 +20,26 @@ if (K > 1)
     %% Try combinations and keep track of codelength
     mm_c = cell(nc,1);
     msglen_c = zeros(nc,1);
-    for i = 1:nc       
-        % Try combining
-        mm_c{i} = mm_CombineClasses(mm, data, CombList(i,:));
-        msglen_c(i) = mm_c{i}.msglen;
-        
-        if(mm.opts.display)
-            fprintf('             class [%3d,%3d]: msglen = %10.2f nits\n', CombList(i,1), CombList(i,2), msglen_c(i));        
-        end            
+    if(mm.opts.useparallel)
+        parfor i = 1:nc       
+            % Try combining
+            mm_c{i} = mm_CombineClasses(mm, data, CombList(i,:));
+            msglen_c(i) = mm_c{i}.msglen;
+            
+            if(mm.opts.display)
+                fprintf('             class [%3d,%3d]: msglen = %10.2f nits\n', CombList(i,1), CombList(i,2), msglen_c(i));        
+            end            
+        end    
+    else
+        for i = 1:nc       
+            % Try combining
+            mm_c{i} = mm_CombineClasses(mm, data, CombList(i,:));
+            msglen_c(i) = mm_c{i}.msglen;
+            
+            if(mm.opts.display)
+                fprintf('             class [%3d,%3d]: msglen = %10.2f nits\n', CombList(i,1), CombList(i,2), msglen_c(i));        
+            end            
+        end
     end
 
     %% Return the best combination

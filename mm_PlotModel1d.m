@@ -25,7 +25,7 @@ style = {'r--','g--','k--','m--','y--','c--','r:','g:','k:','m:','y:','c:'}; % l
 
 % %% Determine min/max plot range 
 K = mm.nClasses;
-[~,blims] = histcounts(data(:,wModel));
+[~,blims] = histcounts(data(:,wModel),20);
 min_val = min(blims);
 max_val = max(blims);
 

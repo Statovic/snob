@@ -155,6 +155,7 @@
 %       'maxiter',integer       - maximum number of search iterations [default=100]
 %       'maxtrycombine',integer - maximum number of classes to attempt to
 %                                 split/combine during each search iteration [default=10]
+%       'useparallel',bool      - utilize multiple cores with parfor [default=false]
 %       'varnames', cell array  - cell array of strings, one for each variable
 %                                 [default={'','',...}]
 %       
@@ -249,6 +250,7 @@ defaultMaxTryCombine  = 10;
 defaultStartModel     = [];
 defaultMaxK           = inf;
 defaultVarNames = {};
+defaultUseParallel = false;
 
 expectedInit = {'random', 'kmeans++'};
 
@@ -263,6 +265,7 @@ addParameter(inParser, 'display', defaultToDisplay, @islogical);
 addParameter(inParser, 'init', defaultInit, @(x) any(validatestring(x, expectedInit)));
 addParameter(inParser, 'fixedstructure', defaultFixedStructure, @islogical);
 addParameter(inParser, 'greedy', defaultGreedy, @islogical);
+addParameter(inParser, 'useparallel', defaultUseParallel, @islogical);
 addParameter(inParser, 'maxtrycombine',  defaultMaxTryCombine, @(x) isnumeric(x) && isscalar(x) && (x > 0));
 addParameter(inParser, 'startmodel', defaultStartModel, @isstruct);
 addParameter(inParser, 'maxk', defaultMaxK, @(x) isnumeric(x) && isscalar(x) && (x > 0));
@@ -284,6 +287,7 @@ opts.emmaxiter      = inParser.Results.emmaxiter;   % maximum number of EM itera
 opts.display        = inParser.Results.display;     % verbose output [default display=true]
 opts.fixedstructure = inParser.Results.fixedstructure;     % do we attempt merger/split combos? [default fixedstructure=false]
 opts.greedy         = inParser.Results.greedy;      % if true, always pick the model with smallest message length; 
+opts.useparallel    = inParser.Results.useparallel; % if true, use parallel snob
 opts.ModelList      = model_list;
                                                     % if false, pick model stochastically [default]
 opts.MaxTryCombines = inParser.Results.maxtrycombine;
@@ -352,6 +356,11 @@ else % Create an empty list as no names were given
     end
 end
 
+%% Create a parallel pool, if required
+opts.pool = [];
+if(opts.useparallel)
+    opts.pool = gcp;
+end
 
 %% Create an initial model
 if(isempty(mm))
@@ -365,6 +374,7 @@ if(opts.display)
     fprintf('|%s|\n', centrestr(sprintf('(c) Enes Makalic, Daniel F Schmidt. 2019-'), maxlen+83));
     fprintf('%s\n', repchar('=', maxlen + 85));    
 end
+
 
 %% Search for the best model
 mm = mm_Search(mm, data);
