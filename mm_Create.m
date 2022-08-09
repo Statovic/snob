@@ -6,6 +6,7 @@ mm.nClasses = opts.nClasses;
 mm.ModelTypes = ModelTypes;
 mm.nModelTypes = length(ModelTypes);
 mm.N = size(data,1);
+mm.Ncols = size(data,2);
 mm.opts = opts;
 
 %% Get minimum members required for each class

@@ -177,6 +177,7 @@
 %
 %  How to interpret the parameter field "theta":
 %  'beta'        - [a, b] 
+%  'crndexp'     - [alpha, beta]
 %  'exp'         - lambda 
 %  'dirichlet'   - theta
 %  'gamma'       - [mu, phi]
