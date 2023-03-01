@@ -1,4 +1,4 @@
-function [lse,sm] = logsumexp(x)
+function [lse,sm] = mylogsumexp(x)
 %LOGSUMEXP  Log-sum-exp function.
 %    lse = LOGSUMEXP(x) returns the log-sum-exp function evaluated at 
 %    the vector x, defined by lse = log(sum(exp(x)).

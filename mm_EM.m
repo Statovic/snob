@@ -25,7 +25,7 @@ while not(done)
         %% New negative log-likelihood
         p = mm_Likelihood(mm, data, 1:mm.nModelTypes);
         p = max(min(p, 700), -700);     % log(p) \in [-700, 700]
-        L(iter) = -sum(logsumexp(-p));  % OLD: -sum(log(sum(p,2)));
+        L(iter) = -sum(mylogsumexp(-p));  % OLD: -sum(log(sum(p,2)));
         
         %% Check exit conditions
         cond = (iter > 5) && mean( abs(diff(L(iter-4:iter))) ) < 1e-2;

@@ -210,6 +210,35 @@ switch type
 
         kl = mvgkl(m0, S0, m1, S1) / d; % per-dimension
 
+    case 'pca'
+        % Parameters of source and target model
+        numPCsSrc = Pop.class{1}.model{attr}.J;
+        if(classSrc > 0)
+            numPCsSrc = mm.class{classSrc}.model{attr}.J;
+        end
+        numPCsTgt = Pop.class{1}.model{attr}.J;
+        if(classTgt > 0)
+            numPCsTgt = mm.class{classTgt}.model{attr}.J;
+        end
+
+        d = mm.ModelTypes{attr}.nDim;
+        m0 = thetaSrc(1:d);
+        m1 = thetaTgt(1:d);
+
+        alpha_pca = thetaSrc((d+1):(d+numPCsSrc));
+        R_pca = reshape(thetaSrc((d+numPCsSrc+1):(d+numPCsSrc+d*numPCsSrc)),d,numPCsSrc);
+        s2 = thetaSrc(end);
+        A_pca = R_pca * diag(alpha_pca);
+        S0 = A_pca*A_pca' + s2*eye(d);        
+
+        alpha_pca = thetaTgt((d+1):(d+numPCsTgt));
+        R_pca = reshape(thetaTgt((d+numPCsTgt+1):(d+numPCsTgt+d*numPCsTgt)),d,numPCsTgt);
+        s2 = thetaTgt(end);
+        A_pca = R_pca * diag(alpha_pca);
+        S1 = A_pca*A_pca' + s2*eye(d);          
+        
+        kl = mvgkl(m0, S0, m1, S1) / d; % per-dimension
+
     case 'Poisson'
         p0 = thetaSrc; p1 = thetaTgt;
         kl = -p0 + p1 + p0*log(p0) - p0*log(p1);

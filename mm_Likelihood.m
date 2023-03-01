@@ -164,6 +164,29 @@ for k = 1:K
                 
                 % Negative log-likelihood
                 subL(I) = 0.5*quadform + logSqrtDetSigma + d*log(2*pi)/2;
+
+            %% PCA
+            case 'pca'
+
+                % Parameters
+                d = mm.ModelTypes{i}.nDim;
+                numPCs = m.J;
+                theta = m.theta;
+                mu = theta(1:d);
+                alpha_pca = theta((d+1):(d+numPCs));
+                R_pca = reshape(theta((d+numPCs+1):(d+numPCs+d*numPCs)),d,numPCs);
+                s2 = theta(end);
+                A_pca = R_pca * diag(alpha_pca);
+                Sigma = A_pca*A_pca' + s2*eye(d);
+
+                X0 = bsxfun(@minus, Y(I, m.Ivar), mu');
+                [R, err] = cholcov(Sigma,0);              
+                logSqrtDetSigma = sum(log(diag(R)));
+                xRinv = X0 / R;
+                quadform = sum(xRinv.^2, 2);
+                
+                % Negative log-likelihood
+                subL(I) = 0.5*quadform + logSqrtDetSigma + d*log(2*pi)/2;                
                 
             %% Univariate Gaussian model
             case 'Gaussian'

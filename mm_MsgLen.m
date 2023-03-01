@@ -23,14 +23,14 @@ p = -mm_Likelihood(mm, data, 1:mm.nModelTypes);
 p = max(min(p, 700), -700); % log(p) \in [-700, 700]
 ep = exp(p);
 if(mm.nClasses > 1)
-    r = bsxfun(@rdivide, ep, exp(logsumexp(p)));
+    r = bsxfun(@rdivide, ep, exp(mylogsumexp(p)));
 else
     r = ones(mm.N, 1);
 end
 Nk = sum(r,1);      % how many things in each class
 
 %An_L = -sum(log(sum(ep,2)));
-An_L = -sum(logsumexp(p));
+An_L = -sum(mylogsumexp(p));
 mm.L = An_L;
 
 % Assertion length for the hyperparameters
@@ -104,6 +104,19 @@ for i = 1:mm.nModelTypes
             % two mu hyperparameters for each column of data; each coded as log(n)/2
             % one sigma hyperparameter coded as logstar(a_star)            
             Atheta = Atheta + sum(log(Nk))*d + K*d*log(2*a_sigma) + logstar(a_sigma);   
+
+        %% PCA
+        case 'pca'
+
+            sigma = zeros(K,1);
+            for k =1:K
+                sigma(k) = sqrt( mm.class{k}.model{i}.theta(end) );
+            end
+            a_sigma = FindPriorRange(sigma(:));            
+            
+            % two mu hyperparameters for each column of data; each coded as log(n)/2
+            % one sigma hyperparameter coded as logstar(a_star)            
+            Atheta = Atheta + K*log(2*a_sigma) + logstar(a_sigma);  
             
             
         %% Inverse Gaussian hyperparameters lambda \in [exp(-a), exp(+a)]
@@ -148,6 +161,7 @@ for k = 1:K
 
             %% no model
             case 'skip'
+                nParams = 0;
                 AssLen = 0;
             
             %% beta distribution
@@ -340,7 +354,38 @@ for k = 1:K
                 
                 totalParams = totalParams + nParams;                
                 AssLen = h_theta + F_theta;                
+            %% PCA
+            case 'pca'
+                d = mm.ModelTypes{i}.nDim;
+                J = model.J;
                 
+                theta = model.theta;
+                alpha_pca = theta((d+1):(d+J));                
+                s2 = theta(end);       
+
+                % check if we have no PCs
+                if(all(alpha_pca > 1e-3))
+                    nParams = 1 + J + J*d - J*(J+1)/2;                    
+
+                    a2 = alpha_pca .* alpha_pca;
+                    h_s = log(s2)/2;
+                    h_R = J*log(2) + (d*J)/2*log(pi) - logmvgamma(J, d/2);
+                    h_a = -J*log(2) - (J^2/2)*log(pi) - (J*J)/2*log(s2) + logmvgamma(J, J/2) + logmvbeta(J, d/2, J/2) ...
+                        -sum((d-J) * log(alpha_pca)) + sum( (d+J)/2 * log(s2 + a2) );
+                    h_theta = h_s + h_R + h_a - gammaln(J+1);
+                    F_theta = nParams/2*log(Nk(k)) + (J+1)/2*log(2) + 1/2*log(d-J) - (J*(d-J)+1)/2*log(s2) ...
+                        +1/2*sum((4*(d-J)+2)*log(alpha_pca)) - (1/2)*sum((d+1)*log(a2 + s2));
+                else
+                    % uncorrelated model
+                    nParams = 1;                    
+                    
+                    h_theta = log(s2);
+                    F_theta = (1/2)*log(2*Nk(k)*d) - log(s2)/2;                    
+                end
+
+                totalParams = totalParams + nParams;
+                AssLen = h_theta + F_theta;  
+
             %% Dirichlet distribution
             case 'dirichlet'
                 d = mm.ModelTypes{i}.nDim;
@@ -383,7 +428,7 @@ for k = 1:K
                     h_theta = h_mu + h_sigma + h_rho;                    
                     F_theta = log(2) + 5*log(Nk(k))/2 - 2*log(s1) - 2*log(s2) - 2*log(1-rho*rho);
                 end
-                AssLen = h_theta + F_theta;                
+                AssLen = h_theta + F_theta;              
                                 
             %% Univariate Gaussian model
             case 'Gaussian'

@@ -1,6 +1,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-function [i,Ix,ModelTypes,VarsUsed] = mm_ProcessModelTypes(model_list, i, Ix, ModelTypes, data, VarsUsed)
+function [i,Ix,ModelTypes,VarsUsed] = mm_ProcessModelTypes(model_list, i, Ix, ModelTypes, data, VarsUsed, numPCs)
 
 k = length(ModelTypes) + 1;
 cols = model_list{i+1};     
@@ -394,7 +394,7 @@ switch lower(model_list{i})
 
         if(any(std(y) == 0))
             error('Data column(s) have zero variance');
-        end            
+        end           
         
     %% Negative binomial distribution
     case {'negb','nbin'}
@@ -600,6 +600,44 @@ switch lower(model_list{i})
         y = data(ix,CovIx);
         ModelTypes{k}.mu0 = min(y);
         ModelTypes{k}.mu1 = max(y);        
+
+    
+    %% PCA
+    case {'pca'}
+        ModelTypes{k}.type = 'pca';
+        ModelTypes{k}.Ivar = cols;   
+        ModelTypes{k}.numPCs = numPCs; 
+        ModelTypes{k}.Description = 'principal component analysis';                    
+        
+        %% Error checking
+        CovIx = ModelTypes{k}.Ivar;
+        if( any(CovIx<1) || any(CovIx > size(data,2)) )
+            error('All covariates must be included in data matrix');
+        end
+        if(length(CovIx) < 2)
+            error('PCA must use at least two data columns');
+        end
+        if(any(VarsUsed(CovIx)))
+            error('Cannot use multiple models for the same data column');
+        end
+        
+        d = length(CovIx);
+        ModelTypes{k}.nDim = d;
+        ModelTypes{k}.MinMembers = 3*d;
+
+        maxPCs = floor( d + 1/2*(1-sqrt(8*d + 1)) );
+        if(numPCs > maxPCs)   
+            error(['model not identifiable; maximum ', num2str(maxPCs), ' PC(s) allowed']);
+        end
+        
+        ix = ~any(isnan(data(:,CovIx)),2);        
+        y = data(ix,CovIx);
+        ModelTypes{k}.mu0 = min(y);
+        ModelTypes{k}.mu1 = max(y);    
+
+        if(any(std(y) == 0))
+            error('Data column(s) have zero variance');
+        end   
         
                     
     %% Univariate Weibull distribution

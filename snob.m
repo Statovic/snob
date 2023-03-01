@@ -86,6 +86,9 @@
 %   (.)    Pareto distribution Type II ('pareto2')
 %               p(Y|sigma,alpha) = alpha sigma^alpha (x + sigma)^(-1-alpha)
 %                                  Y > 0, sigma > 0, alpha > 0
+%   (.)    Principal component analysis ('pca')
+%               x_nk             ~ MVG( mu, Sigma)
+%                                  mu = (0,...,0); Sigma = A*A' + s2*eye(k)
 %   (.)    Gaussian linear regression ('linreg')
 %               p(Y|X,theta)     = Gaussian(b0 + x'*b, sigma^2)
 %                                   Y \in R, b0 \in R, b \ in R^d, sigma>0
@@ -117,6 +120,7 @@
 %                       'negb'      -> Negative binomial distribution
 %                       'norm'      -> Univariate normal distribution
 %                       'pareto2'   -> Pareto distribution (Type II)
+%                       'pca'       -> Principal component analysis
 %                       'poisson'   -> Poisson distribution
 %                       'sfa'       -> Multivariate normal distribution (single factor analysis)
 %                       'vmf'       -> von Mises-Fisher distribution
@@ -196,6 +200,7 @@
 %  'mvg'         - [mu', Sigma(:)']
 %  'negb'        - [mu, phi] where r = phi, p = 1-mu/(mu+phi)
 %  'pareto2'     - [sigma, alpha]
+%  'pca'         - [alpha, R, sigma^2]
 %  'poisson'     - lambda
 %  'sfa'         - [mu', sigma', a']
 %  'weibull'     - [lambda,k]
@@ -234,7 +239,7 @@
 function mm = snob(data, model_list, varargin)
 
 %% Version number
-VERSION = '0.75';
+VERSION = '0.80';
 
 %% Parse options
 inParser = inputParser;  
@@ -251,6 +256,7 @@ defaultMaxTryCombine  = 10;
 defaultStartModel     = [];
 defaultMaxK           = inf;
 defaultVarNames = {};
+defaultNumPCs   = 1;
 defaultUseParallel = false;
 
 expectedInit = {'random', 'kmeans++'};
@@ -271,6 +277,7 @@ addParameter(inParser, 'maxtrycombine',  defaultMaxTryCombine, @(x) isnumeric(x)
 addParameter(inParser, 'startmodel', defaultStartModel, @isstruct);
 addParameter(inParser, 'maxk', defaultMaxK, @(x) isnumeric(x) && isscalar(x) && (x > 0));
 addParameter(inParser, 'varnames', defaultVarNames, @iscell);
+addParameter(inParser, 'numpcs',  defaultNumPCs, @(x) isnumeric(x) && isscalar(x) && (x > 0));
 
 % Parse the input now
 parse(inParser, model_list, varargin{:});  
@@ -294,6 +301,7 @@ opts.ModelList      = model_list;
 opts.MaxTryCombines = inParser.Results.maxtrycombine;
 opts.SearchOptions  = optimoptions('fminunc','display','off');
 opts.VarNames       = upper(inParser.Results.varnames);
+opts.numPCs         = inParser.Results.numpcs;      % how many PCs to use
 
 
 %% Check Options
@@ -321,7 +329,7 @@ if (~isempty(models))
         if(all(VarsUsed))
             error('Too many models specified');
         end
-        [i, Ix, ModelTypes, VarsUsed] = mm_ProcessModelTypes(model_list, i, Ix, ModelTypes, data, VarsUsed);
+        [i, Ix, ModelTypes, VarsUsed] = mm_ProcessModelTypes(model_list, i, Ix, ModelTypes, data, VarsUsed, opts.numPCs);
     end
     
     % If insufficient models were added to cover all data columns, return an error

@@ -114,6 +114,14 @@ for i = 1:length(models)
             lambda = theta(1);
             data(:,mdl.Ivar) = poissrnd(lambda, N, 1);     
 
+        case 'sfa'
+           d = length(mdl.Ivar);
+            mu = theta(1:d);
+            sigma = theta((d+1):(2*d));
+            a_sfa = theta((2*d+1):end);
+            Sigma = a_sfa*a_sfa' + diag(sigma.^2);
+            data(:,mdl.Ivar) = mvnrnd(mu, Sigma, N);
+
         case 'vmf'
             kappa = theta(1); mu = theta(2:end);
             data(:,mdl.Ivar) = vmfrnd(kappa,mu,N);

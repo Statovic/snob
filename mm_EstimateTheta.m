@@ -221,6 +221,22 @@ for k = wClasses
             model.v     = v;
             model.collapsed = collapsed;
 
+            %% PCA
+            case 'pca'
+
+            % Parameters
+            ix  = ~any(isnan(y),2);        
+            Nk  = sum(r(ix));                   % n            
+            mu  = sum(bsxfun(@times, y(ix,:), r(ix))) / Nk;    
+            xmu = bsxfun(@minus, y(ix,:), mu);
+            rxmu = bsxfun(@times, xmu, sqrt(r(ix)));
+            numPCs = model.J;
+            [a_pca, R_pca, sigma2, collapsed, totalVar] = mmlpca(rxmu, Nk, numPCs);
+            
+            model.theta = [mu(:); a_pca(:); R_pca(:); sigma2];  
+            model.J = sum(a_pca > 1e-3);
+            model.collapsed = collapsed;              
+            model.totalVar = totalVar;
             
             %% Multivariate Gaussian model
             case 'mvg'

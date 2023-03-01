@@ -34,6 +34,27 @@ for i = 1:length(ModelTypes)
             class.model{i}.theta = [mu; sigma(:); a(:)]; % [mu,sigma,a,v]       
             class.model{i}.v     = 0;
             class.model{i}.collapsed = true;
+
+        case 'pca'
+            d = ModelTypes{i}.nDim;
+            numPCs = ModelTypes{i}.numPCs;
+            sigma2 = rand(1);
+            if(numPCs >= 1)
+                a_pca = rand(numPCs,1);
+                R_pca = randn(d,numPCs);
+                R_pca = bsxfun(@rdivide, R_pca, sqrt(sum(R_pca.^2)));
+            else
+                a_pca = 0;
+                R_pca = [];
+            end
+            mu = randn(d,1);
+       
+            class.model{i}.type  = 'pca';                % type
+            class.model{i}.Ivar  = ModelTypes{i}.Ivar;   % which variable in the data?
+            class.model{i}.K = d;
+            class.model{i}.J = numPCs;
+            class.model{i}.theta = [mu(:); a_pca; R_pca(:); sigma2];   % [mu,alpha,R,sigma2]       
+            class.model{i}.collapsed = false;            
         
         case 'dirichlet'
             d = ModelTypes{i}.nDim;

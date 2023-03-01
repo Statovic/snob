@@ -156,6 +156,97 @@ for k = 1:nClasses
                 fprintf('%10s\n', mm.opts.VarNames{Ivar(1)});  
                 fprintf('%43s = %7.2f%10s = %7.2f', 'mu',theta(1),'phi',theta(2));                
                 
+            %% PCA
+            case 'pca'
+                d = mm.ModelTypes{i}.nDim;
+                numPCs = model.J;
+                fprintf('%20s', ['PCA(k=',num2str(numPCs),')']);        
+                fprintf('%10s ', mm.opts.VarNames{Ivar(1)});                
+                for j = 2:d
+                    fprintf('%s ', mm.opts.VarNames{Ivar(j)});                
+                end
+                fprintf('\n');     
+
+                mu = theta(1:d);
+                alpha_pca = theta((d+1):(d+numPCs));
+                R_pca = reshape(theta((d+numPCs+1):(d+numPCs+d*numPCs)),d,numPCs);
+                A_pca = R_pca * diag(alpha_pca);
+                s2 = theta(end);
+
+                Sigma = A_pca*A_pca' + diag(s2)*eye(d);
+                s = sqrt(diag(Sigma));
+                R = Sigma ./ (s*s');                
+
+                % mu
+                fprintf('%43s = [', 'mu');
+                for j = 1:length(mu)
+                    fprintf('%4.2f', mu(j));
+                    if(j ~= length(mu))
+                        fprintf(' ');
+                    end
+                end
+                fprintf(']\n');                   
+
+                % sigma
+                fprintf('%43s = [', 'std');                
+                for j = 1:length(s2)
+                    fprintf('%4.2f', sqrt(s2(j)));
+                    if(j ~= length(s2))
+                        fprintf(' ');
+                    end
+                end
+                fprintf(']\n');                       
+                
+                % a
+                fprintf('%43s = [', 'a');                
+                for j = 1:length(alpha_pca)
+                    fprintf('%+5.2f', alpha_pca(j));
+                    if(j ~= length(alpha_pca))
+                        fprintf(' ');
+                    end
+                end    
+                fprintf(']');         
+
+                if(model.collapsed)
+                    fprintf('*');
+                else
+                    fprintf(', %s = %.2f', '||a / std||', norm(alpha_pca./sqrt(s2)));  
+                end
+                fprintf('\n');
+
+                % total variance explained
+                fprintf('%43s = [', 'Var. Explained');                
+                for j = 1:length(alpha_pca)
+                    fprintf('%+5.2f', alpha_pca(j)^2/model.totalVar*100);
+                    if(j ~= length(alpha_pca))
+                        fprintf(' ');
+                    end
+                end    
+                fprintf(']\n');                 
+
+                % R
+                fprintf('%43s = [', 'R');
+                if(d <= 10)
+                    for j = 1:d
+                        if(j>1)
+                            fprintf('%47s','[');
+                        end
+                        for jj = 1:d
+                            fprintf('%+8.2f', R(j,jj));
+                            if(jj < d)
+                                fprintf(' ');
+                            else
+                                fprintf(']');
+                            end
+                        end
+                        if(j<d)
+                            fprintf('\n');
+                        end
+                    end                                
+                else
+                    fprintf(' ... ]\n');
+                end
+                
             %% Single factor analysis    
             case 'sfa'
                 d = mm.ModelTypes{i}.nDim;
