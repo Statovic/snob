@@ -31,3 +31,8 @@ mm = snob(data, {'crndexp', [1,2]}, 'k', 1);
 
 %% Lets look at the model snob discovered
 mm_Summary(mm);
+
+% Print a matrix of KL divergences for the SFA model
+% Label 'Pop.' denotes the single class model (ie, no mixture)
+fprintf('KL divergences between each class:\n');
+mm_KLstats(mm, data);

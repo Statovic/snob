@@ -49,7 +49,7 @@ figure;
 plot(x, Survival, 'k-');
 grid;
 xlabel('X', 'fontsize', 16);
-ylabel('S(X)', 'fontsize', 16);
+ylabel('Survivor function S(X)', 'fontsize', 16);
 title('Mixture of exponential distributions', 'fontsize', 18);
 
 %% Example - Simulated data (mixtures of Weibull distributions with fixed type I censoring)
@@ -95,5 +95,5 @@ figure;
 plot(x, Survival, 'k-');
 grid;
 xlabel('X', 'fontsize', 16);
-ylabel('S(X)', 'fontsize', 16);
+ylabel('Survivor function S(X)', 'fontsize', 16);
 title('Mixture of Weibull distributions', 'fontsize', 18);

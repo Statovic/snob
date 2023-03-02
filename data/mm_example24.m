@@ -1,7 +1,8 @@
 %% Example - Simulated data (mixtures of PCAs)
 clear;
-
 rng(1);
+
+useparallel = true; % do we use parpool()?
 
 %% Generate data
 K = 3;          % number of classes
@@ -36,10 +37,13 @@ for i = 1:K
 end
 
 %% Mixture model
-mm = snob(data, {'pca',1:D}, 'k', 1, 'useparallel', true, 'numpcs', J);
+mm = snob(data, {'pca',1:D}, 'k', 1, 'useparallel', useparallel, 'numpcs', J);
 mm_Summary(mm);
 
 %% Print matrix of KL divergences
+% Print KL divergences between each class
+% Label 'Pop.' denotes the single class model (ie, no mixture)
+fprintf('KL divergences between each class:\n');
 mm_KLstats(mm, data);
 
 %% Print Rand index and Adjusted Rand Index (ARI)
@@ -48,4 +52,8 @@ mm_KLstats(mm, data);
 
 fprintf('\n')
 fprintf('*** Rand index = %5.3f, Adjusted rand index (ARI) = %5.3f\n', r, adjr);
+
+% Print minimum number of misclassifications
+mclass = minmis(mm, TrueInd);
+fprintf('*** Minimum number of misclassifications is %d.\n', mclass);
 fprintf('\n')

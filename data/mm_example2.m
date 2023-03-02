@@ -30,7 +30,8 @@ mm_Summary(mm);
 mm_PlotModel1d(mm, acidity, 1);
 
 % We now force Snob to use 3 classes and turn off subpopulation discovery. 
-mm2 = snob(acidity, {'norm',1}, 'k', 3, 'fixedstructure', true, 'varnames', {'Acidity'});
+mm2 = snob(acidity, {'norm',1}, 'k', 3, 'fixedstructure', true, ...
+    'varnames', {'Acidity'}, 'display', false);
 
 % Print a summary of the new model. 
 % The total message length of the 3-class model is ~217 nits; ~5.4 nits longer than
@@ -70,5 +71,7 @@ mm_ig = snob(acidity, {'igauss',1}, 'k', 5, 'varnames', {'Acidity'});
 
 % Print a matrix of KL divergences for both the Gaussian and 
 % inverse Gaussian models
+% Label 'Pop.' denotes the single class model (ie, no mixture)
+fprintf('KL divergences between each class:\n');
 mm_KLstats(mm, acidity);
 mm_KLstats(mm_ig, acidity);

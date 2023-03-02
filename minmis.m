@@ -1,6 +1,8 @@
 %MINMIS    Computes the minimum number of misclassifications
 %  MINMIS(.) computes the minimum number of missclassifications by the
-%  mixture model given the true class labels.
+%  mixture model by label rotation given the true class labels. The total 
+%  number of estimated classes (K) cannot exceed K=8 as there are K! 
+%  labellings to check; e.g., 8! = 40,320.
 %  
 %  The input arguments are:
 %   mm       - mixture model structure as returned by snob
@@ -9,11 +11,16 @@
 % (c) Copyright Enes Makalic and Daniel F. Schmidt, 2019-
 function minCl = minmis(mm, TrueInd)
 
-% Estimated class assignments by max probability
+% Estimate class assignments by max probability
 [~,EstInd] = max(mm.r, [], 2);          
-
-% compute min misclassification by label rotation
 Kpred = length(unique(EstInd));
+
+% Check how many classes exist
+if(Kpred > 8)
+    error(['Too many rotations to check [Max Rot = ', num2str(factorial(Kpred)), ']']);
+end
+
+%% Compute minimum number of misclassifications by label rotation
 Labels = perms(1:Kpred);
 m = length(Labels);
 

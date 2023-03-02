@@ -88,7 +88,7 @@
 %                                  Y > 0, sigma > 0, alpha > 0
 %   (.)    Principal component analysis ('pca')
 %               x_nk             ~ MVG( mu, Sigma)
-%                                  mu = (0,...,0); Sigma = A*A' + s2*eye(k)
+%                                  Sigma = A*A' + s2*eye(k)
 %   (.)    Gaussian linear regression ('linreg')
 %               p(Y|X,theta)     = Gaussian(b0 + x'*b, sigma^2)
 %                                   Y \in R, b0 \in R, b \ in R^d, sigma>0
@@ -159,6 +159,7 @@
 %       'maxiter',integer       - maximum number of search iterations [default=100]
 %       'maxtrycombine',integer - maximum number of classes to attempt to
 %                                 split/combine during each search iteration [default=10]
+%       'numpcs',integer        - number of principal components to use in each class
 %       'useparallel',bool      - utilize multiple cores with parfor [default=false]
 %       'varnames', cell array  - cell array of strings, one for each variable
 %                                 [default={'','',...}]
@@ -200,7 +201,7 @@
 %  'mvg'         - [mu', Sigma(:)']
 %  'negb'        - [mu, phi] where r = phi, p = 1-mu/(mu+phi)
 %  'pareto2'     - [sigma, alpha]
-%  'pca'         - [alpha, R, sigma^2]
+%  'pca'         - [mu,alpha, R, sigma^2]
 %  'poisson'     - lambda
 %  'sfa'         - [mu', sigma', a']
 %  'weibull'     - [lambda,k]
@@ -239,7 +240,7 @@
 function mm = snob(data, model_list, varargin)
 
 %% Version number
-VERSION = '0.80';
+VERSION = '0.81';
 
 %% Parse options
 inParser = inputParser;  

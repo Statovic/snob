@@ -1,6 +1,8 @@
 %% Example - Simulated data (mixtures of linear regressions)
 clear;
 
+rng(2);
+
 %% Generate data from K mixtures of linear regression models
 % Each linear regression model has D covariates
 K = 4;          % number of classes
@@ -73,4 +75,7 @@ end
 
 fprintf('\n')
 fprintf('*** Rand index = %5.3f, Adjusted rand index (ARI) = %5.3f\n', r, adjr);
+
+mclass = minmis(mm, TrueInd);
+fprintf('*** Minimum number of misclassifications is %d.\n', mclass);
 fprintf('\n')

@@ -6,8 +6,8 @@ rng(1);
 
 % Generate n=100 data points from a mixture of two exponential distributions 
 % The first 60 points are from class #1 and the last 40 points from class #2
-% x ~ 0.6 Exp(5) + 0.4 Exp(1)
-x = [exprnd(5, 60, 1); exprnd(1, 40, 1)];
+% x ~ 0.6 Exp(10) + 0.4 Exp(1)
+x = [exprnd(10, 60, 1); exprnd(1, 40, 1)];
 
 % Run Snob with the following options: 
 %     (1) the data is modelled using a univariate exponential distribution: {'exp',1}
@@ -19,8 +19,13 @@ mm = snob(x, {'exp',1},'k',5,'display',false);
 
 % Print a summary of the discovered mixture model.
 % The total message length of this model is 241.84 nits. 
-% The model discovered is x ~ 0.42 Exp(0.9) + 0.58 Exp(6.4)
+% The model discovered is x ~ 0.587 Exp(12.63) + 0.413 Exp(0.91)
 mm_Summary(mm);
+
+% Print KL divergences between each class
+% Label 'Pop.' denotes the single class model (ie, no mixture)
+fprintf('KL divergences between each class:\n');
+mm_KLstats(mm, x);
 
 % The mixing proportions of the mixture model are stored in mm.a
 % The mean parameter for class i is stored in mm.class{i}.model{1}.theta
@@ -32,6 +37,10 @@ TrueInd = [ones(60,1); 2*ones(40,1)];   % True class assignments
 
 fprintf('\n')
 fprintf('*** Rand index = %5.3f, Adjusted rand index (ARI) = %5.3f\n', r, adjr);
+
+% Print minimum number of misclassifications
+mclass = minmis(mm, TrueInd);
+fprintf('*** Minimum number of misclassifications is %d.\n', mclass);
 fprintf('\n')
 
 % What if we fit three sub-populations to this data?

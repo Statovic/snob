@@ -4,9 +4,9 @@ clear;
 %% Generate data
 N = 1e2;    % number of data points
 K = 3;      % number of classes
-w = [0.2, 0.5, 0.3]; % mixing proportions
+w = [0.3, 0.4, 0.3]; % mixing proportions
 w = w ./ sum(w);     % make sure these sum up to 1
-p = [0.7, 0.2, 0.4]; % parameter of each geometric distribution
+p = [0.90, 0.05, 0.55]; % parameter of each geometric distribution
 
 x = nan(N, 1);
 TrueInd = nan(N,1);
@@ -29,4 +29,8 @@ mm_PlotModel1d(mm, x, 1);
 
 fprintf('\n')
 fprintf('*** Rand index = %5.3f, Adjusted rand index (ARI) = %5.3f\n', r, adjr);
+
+% Print minimum number of misclassifications
+mclass = minmis(mm, TrueInd);
+fprintf('*** Minimum number of misclassifications is %d.\n', mclass);
 fprintf('\n')

@@ -43,4 +43,13 @@ TrueInd = label;
 
 fprintf('\n')
 fprintf('*** Rand index = %5.3f, Adjusted rand index (ARI) = %5.3f\n', r, adjr);
+
+% Print minimum number of misclassifications
+mclass = minmis(mm_sfa, TrueInd);
+fprintf('*** Minimum number of misclassifications is %d.\n', mclass);
 fprintf('\n')
+
+% Print a matrix of KL divergences for the SFA model
+% Label 'Pop.' denotes the single class model (ie, no mixture)
+fprintf('KL divergences between each class:\n');
+mm_KLstats(mm_sfa, x);

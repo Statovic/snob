@@ -24,8 +24,14 @@ mm = snob(data, {'multi',1,'mvg',2:4,'mvg',5:10,'linreg',[11,1:p]},'k',4,'varnam
 % There are two classes. The total message length is ~14,867 nits.
 mm_Summary(mm);
 
+% Print a matrix of KL divergences for the SFA model
+% Label 'Pop.' denotes the single class model (ie, no mixture)
+fprintf('KL divergences between each class:\n');
+mm_KLstats(mm, data);
+
 % Now, suppose we model AGE,BMI and BP as uncorrelated [spherical Gaussian]
-mm2 = snob(data, {'multi',1,'norm',2:4,'mvg',5:10,'linreg',[11,1:p]},'k',4,'varnames', VarNames);
+mm2 = snob(data, {'multi',1,'norm',2:4,'mvg',5:10,'linreg',[11,1:p]}, ...
+    'k',4,'varnames', VarNames, 'display', false);
 mm_Summary(mm2);
 
 % The codelengths are...
